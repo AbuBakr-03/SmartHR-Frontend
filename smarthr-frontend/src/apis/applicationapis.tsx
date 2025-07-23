@@ -4,44 +4,55 @@ import { z } from "zod";
 
 const BASE_URL = "http://127.0.0.1:8000/api/application/";
 
-// Schema for category (nested in menu response)
+// Schema for status
 const status_schema = z.object({
   id: z.number(),
   title: z.string(),
   slug: z.string(),
 });
 
+// Schema for company
 const company_schema = z.object({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
 });
 
+// Schema for department
 const department_schema = z.object({
   id: z.number(),
   title: z.string(),
   slug: z.string(),
 });
 
+// Schema for user (recruiter)
+const user_schema = z.object({
+  id: z.number(),
+  username: z.string(),
+});
+
+// Corrected job schema - matches serializer output
 const job_schema = z.object({
   id: z.number(),
   title: z.string(),
   location: z.string(),
-  responsiblities: z.string(),
-  qualifications: z.string(),
+  responsiblities: z.string(), // Note: keeping the typo as it exists in the model
+  qualification: z.string(), // Fixed: removed 's'
   nice_to_haves: z.string(),
   end_date: z.coerce.date(),
   company: company_schema,
   department: department_schema,
+  recruiter: user_schema.nullable(), // Added missing recruiter field
 });
 
+// Corrected application schema
 const application_schema = z.object({
   id: z.number(),
   name: z.string(),
-  email: z.email(),
+  email: z.string().email(),
   residence: z.string(),
   cover_letter: z.string(),
-  resume: z.instanceof(File).nullable(),
+  resume: z.string().nullable(), // File URLs/paths from API, not File objects
   match_score: z.number().nullable(),
   job: job_schema,
   status: status_schema,
@@ -50,12 +61,13 @@ const application_schema = z.object({
 const application_array_schema = z.array(application_schema);
 
 export type application_type = z.infer<typeof application_schema>;
+
+// Corrected post type - removed status_id (backend sets default)
 export type application_post_type = Omit<
   application_type,
-  "id" | "job" | "status"
+  "id" | "job" | "status" | "match_score"
 > & {
   job_id: number;
-  status_id: number;
   resume: File; // For file upload
 };
 
@@ -76,7 +88,7 @@ export const listApplications = async (): Promise<application_type[]> => {
   }
 };
 
-// Private functions (require auth)
+// Private functions (require auth) - Fixed endpoint consistency
 export const listApplicationsPrivate = async (
   axiosPrivate: any,
 ): Promise<application_type[]> => {
@@ -106,14 +118,14 @@ export const createApplicationPrivate = async (
     formData.append("email", applicationData.email);
     formData.append("residence", applicationData.residence);
     formData.append("cover_letter", applicationData.cover_letter);
-    formData.append(
-      "match_score",
-      applicationData.match_score?.toString() || (0).toString(),
-    );
-
     formData.append("job_id", applicationData.job_id.toString());
-    formData.append("status_id", applicationData.status_id.toString());
-    formData.append("resume", applicationData.resume);
+
+    // Only append resume if it exists
+    if (applicationData.resume) {
+      formData.append("resume", applicationData.resume);
+    }
+
+    // Removed status_id and match_score - backend handles these
 
     const { data } = await axiosPrivate.post("application/", formData, {
       headers: {
@@ -154,6 +166,7 @@ export const retrieveApplicationPrivate = async (
   }
 };
 
+// Simplified update function
 export const updateApplicationPrivate = async (
   axiosPrivate: any,
   applicationData: application_type,
@@ -162,10 +175,10 @@ export const updateApplicationPrivate = async (
     const { data } = await axiosPrivate.patch(
       `application/${applicationData.id}/`,
       {
-        cover_letter: applicationData.cover_letter,
-        email: applicationData.email,
         name: applicationData.name,
+        email: applicationData.email,
         residence: applicationData.residence,
+        cover_letter: applicationData.cover_letter,
         job_id: applicationData.job.id,
       },
     );
@@ -195,25 +208,21 @@ export const deleteApplicationPrivate = async (
   }
 };
 
-// Legacy functions for backward compatibility (keeping for public use)
+// Legacy functions for backward compatibility
 export const createApplication = async (
   applicationData: application_post_type,
 ): Promise<application_type> => {
   try {
-    // Create FormData for file upload
     const formData = new FormData();
     formData.append("name", applicationData.name);
     formData.append("email", applicationData.email);
     formData.append("residence", applicationData.residence);
     formData.append("cover_letter", applicationData.cover_letter);
-    formData.append(
-      "match_score",
-      applicationData.match_score?.toString() || (0).toString(),
-    );
-
     formData.append("job_id", applicationData.job_id.toString());
-    formData.append("status_id", applicationData.status_id.toString());
-    formData.append("resume", applicationData.resume);
+
+    if (applicationData.resume) {
+      formData.append("resume", applicationData.resume);
+    }
 
     const { data } = await axios.post(BASE_URL, formData, {
       headers: {
@@ -258,10 +267,10 @@ export const updateApplication = async (
 ): Promise<application_type> => {
   try {
     const { data } = await axios.patch(`${BASE_URL}${applicationData.id}/`, {
-      cover_letter: applicationData.cover_letter,
-      email: applicationData.email,
       name: applicationData.name,
+      email: applicationData.email,
       residence: applicationData.residence,
+      cover_letter: applicationData.cover_letter,
       job_id: applicationData.job.id,
     });
 
