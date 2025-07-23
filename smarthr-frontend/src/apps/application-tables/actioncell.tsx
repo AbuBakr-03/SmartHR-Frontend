@@ -57,8 +57,9 @@ import {
   useUpdateApplicationPrivate,
   useDeleteApplicationPrivate,
 } from "@/hooks/useApplication";
-import { useListCategoriesPrivate } from "@/hooks/useCategory";
+import { useListJobsPrivate } from "@/hooks/useJob";
 import { toast } from "sonner";
+import { application_schema } from "../../apis/applicationapis";
 
 const Actionscell = ({ item }: { item: application_type }) => {
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
@@ -106,6 +107,8 @@ const Actionscell = ({ item }: { item: application_type }) => {
     email: z.email().min(1, "Email is required"),
     residence: z.string().min(1, "Residence is required"),
     cover_letter: z.string(),
+    resume: z.string().nullable(), // File URLs/paths from API, not File objects
+    match_score: z.number().nullable(),
   });
 
   type FormData = z.infer<typeof schema>;
@@ -123,7 +126,7 @@ const Actionscell = ({ item }: { item: application_type }) => {
 
   const updateApplication = useUpdateApplicationPrivate();
   const deleteApplication = useDeleteApplicationPrivate();
-  const { data: categories } = useListCategoriesPrivate();
+  const { data: jobs } = useListJobsPrivate();
 
   const onSubmit = (data: FormData) => {
     console.log("Submitting application update:", data);
@@ -154,9 +157,9 @@ const Actionscell = ({ item }: { item: application_type }) => {
     });
   };
 
-  const categoryOptions = categories?.map((category) => (
-    <SelectItem key={category.id} value={category.id.toString()}>
-      {category.category_name}
+  const jobsOptions = jobs?.map((job) => (
+    <SelectItem key={job.id} value={job.id.toString()}>
+      {job.title}
     </SelectItem>
   ));
 
@@ -295,19 +298,19 @@ const Actionscell = ({ item }: { item: application_type }) => {
 
                   <FormField
                     control={form.control}
-                    name="category"
+                    name="job"
                     render={({ field }) => (
                       <FormItem className="col-span-2">
-                        <FormLabel>Category</FormLabel>
+                        <FormLabel>Job</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            const selectedCategory = categories?.find(
-                              (cat) => cat.id.toString() === value,
+                            const selectedJob = jobs?.find(
+                              (job) => job.id.toString() === value,
                             );
-                            if (selectedCategory) {
+                            if (selectedJob) {
                               field.onChange({
-                                id: selectedCategory.id,
-                                category_name: selectedCategory.category_name,
+                                id: selectedJob.id,
+                                title: selectedJob.title,
                               });
                             }
                           }}
@@ -318,7 +321,7 @@ const Actionscell = ({ item }: { item: application_type }) => {
                               <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>{categoryOptions}</SelectContent>
+                          <SelectContent>{jobsOptions}</SelectContent>
                         </Select>
                         <FormMessage />
                       </FormItem>

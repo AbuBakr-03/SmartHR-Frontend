@@ -3,34 +3,34 @@
 import { z } from "zod";
 
 // Schema for status
-const status_schema = z.object({
+export const status_schema = z.object({
   id: z.number(),
   title: z.string(),
   slug: z.string(),
 });
 
 // Schema for company
-const company_schema = z.object({
+export const company_schema = z.object({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
 });
 
 // Schema for department
-const department_schema = z.object({
+export const department_schema = z.object({
   id: z.number(),
   title: z.string(),
   slug: z.string(),
 });
 
 // Schema for user (recruiter)
-const user_schema = z.object({
+export const user_schema = z.object({
   id: z.number(),
   username: z.string(),
 });
 
 // Corrected job schema - matches serializer output
-const job_schema = z.object({
+export const job_schema = z.object({
   id: z.number(),
   title: z.string(),
   location: z.string(),
@@ -44,7 +44,7 @@ const job_schema = z.object({
 });
 
 // Corrected application schema
-const application_schema = z.object({
+export const application_schema = z.object({
   id: z.number(),
   name: z.string(),
   email: z.email(),

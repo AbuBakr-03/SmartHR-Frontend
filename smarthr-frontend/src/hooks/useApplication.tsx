@@ -44,10 +44,13 @@ export const useCreateApplicationPrivate = () => {
   return useMutation<application_type, Error, application_post_type>({
     mutationFn: (applicationData) =>
       createApplicationPrivate(axiosPrivate, applicationData),
-    onSuccess: () => {
+    onSuccess: (newApplication) => {
       // Invalidate both private and public caches
       queryClient.invalidateQueries({ queryKey: ["applications-private"] });
-      queryClient.invalidateQueries({ queryKey: ["applications"] });
+      queryClient.setQueryData(
+        ["application-private", newApplication.id],
+        newApplication,
+      );
     },
     onError: (error) => {
       console.error("Create application failed:", error);
@@ -65,11 +68,9 @@ export const useUpdateApplicationPrivate = () => {
     onSuccess: (data) => {
       // Invalidate list queries
       queryClient.invalidateQueries({ queryKey: ["applications-private"] });
-      queryClient.invalidateQueries({ queryKey: ["applications"] });
 
       // Update specific item in cache
       queryClient.setQueryData(["application-private", data.id], data);
-      queryClient.setQueryData(["application", data.id], data);
     },
     onError: (error) => {
       console.error("Update application failed:", error);
@@ -86,13 +87,11 @@ export const useDeleteApplicationPrivate = () => {
     onSuccess: (_, deletedId) => {
       // Invalidate list queries
       queryClient.invalidateQueries({ queryKey: ["applications-private"] });
-      queryClient.invalidateQueries({ queryKey: ["applications"] });
 
       // Remove specific item from cache
       queryClient.removeQueries({
         queryKey: ["application-private", deletedId],
       });
-      queryClient.removeQueries({ queryKey: ["application", deletedId] });
     },
     onError: (error) => {
       console.error("Delete application failed:", error);
