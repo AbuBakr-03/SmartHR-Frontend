@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from "axios";
-import { z } from "zod";
 
-const BASE_URL = "http://127.0.0.1:8000/api/application/";
+import { z } from "zod";
 
 // Schema for status
 const status_schema = z.object({
@@ -49,7 +47,7 @@ const job_schema = z.object({
 const application_schema = z.object({
   id: z.number(),
   name: z.string(),
-  email: z.string().email(),
+  email: z.email(),
   residence: z.string(),
   cover_letter: z.string(),
   resume: z.string().nullable(), // File URLs/paths from API, not File objects
@@ -69,23 +67,6 @@ export type application_post_type = Omit<
 > & {
   job_id: number;
   resume: File; // For file upload
-};
-
-// Public functions (no auth required)
-export const listApplications = async (): Promise<application_type[]> => {
-  try {
-    const { data } = await axios.get(BASE_URL);
-    const result = application_array_schema.safeParse(data);
-    if (result.success) {
-      return result.data;
-    } else {
-      console.error("Validation error:", result.error);
-      throw new Error("Failed to validate response data");
-    }
-  } catch (error) {
-    console.error("List applications error:", error);
-    throw error;
-  }
 };
 
 // Private functions (require auth) - Fixed endpoint consistency
@@ -202,94 +183,6 @@ export const deleteApplicationPrivate = async (
 ): Promise<void> => {
   try {
     await axiosPrivate.delete(`application/${id}/`);
-  } catch (error) {
-    console.error("Delete application error:", error);
-    throw error;
-  }
-};
-
-// Legacy functions for backward compatibility
-export const createApplication = async (
-  applicationData: application_post_type,
-): Promise<application_type> => {
-  try {
-    const formData = new FormData();
-    formData.append("name", applicationData.name);
-    formData.append("email", applicationData.email);
-    formData.append("residence", applicationData.residence);
-    formData.append("cover_letter", applicationData.cover_letter);
-    formData.append("job_id", applicationData.job_id.toString());
-
-    if (applicationData.resume) {
-      formData.append("resume", applicationData.resume);
-    }
-
-    const { data } = await axios.post(BASE_URL, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    const result = application_schema.safeParse(data);
-    if (result.success) {
-      return result.data;
-    } else {
-      console.error("Validation error:", result.error);
-      console.error("Response data:", data);
-      throw new Error("Failed to validate response data");
-    }
-  } catch (error) {
-    console.error("Create application error:", error);
-    throw error;
-  }
-};
-
-export const retrieveApplication = async (
-  id: number,
-): Promise<application_type> => {
-  try {
-    const { data } = await axios.get(`${BASE_URL}${id}/`);
-    const result = application_schema.safeParse(data);
-    if (result.success) {
-      return result.data;
-    } else {
-      console.error("Validation error:", result.error);
-      throw new Error("Failed to validate response data");
-    }
-  } catch (error) {
-    console.error("Retrieve application error:", error);
-    throw error;
-  }
-};
-
-export const updateApplication = async (
-  applicationData: application_type,
-): Promise<application_type> => {
-  try {
-    const { data } = await axios.patch(`${BASE_URL}${applicationData.id}/`, {
-      name: applicationData.name,
-      email: applicationData.email,
-      residence: applicationData.residence,
-      cover_letter: applicationData.cover_letter,
-      job_id: applicationData.job.id,
-    });
-
-    const result = application_schema.safeParse(data);
-    if (result.success) {
-      return result.data;
-    } else {
-      console.error("Validation error:", result.error);
-      throw new Error("Failed to validate response data");
-    }
-  } catch (error) {
-    console.error("Update application error:", error);
-    throw error;
-  }
-};
-
-export const deleteApplication = async (id: number): Promise<void> => {
-  try {
-    await axios.delete(`${BASE_URL}${id}/`);
   } catch (error) {
     console.error("Delete application error:", error);
     throw error;
