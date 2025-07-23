@@ -59,7 +59,6 @@ import {
 } from "@/hooks/useApplication";
 import { useListJobsPrivate } from "@/hooks/useJob";
 import { toast } from "sonner";
-import { application_schema } from "../../apis/applicationapis";
 
 const Actionscell = ({ item }: { item: application_type }) => {
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
@@ -104,11 +103,41 @@ const Actionscell = ({ item }: { item: application_type }) => {
   const schema = z.object({
     id: z.number(),
     name: z.string().min(1, "Name is required"),
-    email: z.email().min(1, "Email is required"),
+    email: z.email("Valid email is required"),
     residence: z.string().min(1, "Residence is required"),
-    cover_letter: z.string(),
-    resume: z.string().nullable(), // File URLs/paths from API, not File objects
+    cover_letter: z.string().min(1, "Cover letter is required"),
+    resume: z.string().nullable(),
     match_score: z.number().nullable(),
+    job: z.object({
+      id: z.number(),
+      title: z.string(),
+      location: z.string(),
+      responsiblities: z.string(),
+      qualification: z.string(),
+      nice_to_haves: z.string(),
+      end_date: z.date(),
+      company: z.object({
+        id: z.number(),
+        name: z.string(),
+        slug: z.string(),
+      }),
+      department: z.object({
+        id: z.number(),
+        title: z.string(),
+        slug: z.string(),
+      }),
+      recruiter: z
+        .object({
+          id: z.number(),
+          username: z.string(),
+        })
+        .nullable(),
+    }),
+    status: z.object({
+      id: z.number(),
+      title: z.string(),
+      slug: z.string(),
+    }),
   });
 
   type FormData = z.infer<typeof schema>;
@@ -121,6 +150,10 @@ const Actionscell = ({ item }: { item: application_type }) => {
       email: item.email,
       residence: item.residence,
       cover_letter: item.cover_letter,
+      resume: item.resume, // ADDED
+      match_score: item.match_score, // ADDED
+      job: item.job, // ADDED
+      status: item.status,
     },
   });
 
@@ -157,7 +190,7 @@ const Actionscell = ({ item }: { item: application_type }) => {
     });
   };
 
-  const jobsOptions = jobs?.map((job) => (
+  const jobOptions = jobs?.map((job) => (
     <SelectItem key={job.id} value={job.id.toString()}>
       {job.title}
     </SelectItem>
@@ -261,7 +294,7 @@ const Actionscell = ({ item }: { item: application_type }) => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email;</FormLabel>
+                        <FormLabel>Email</FormLabel>
                         <FormControl>
                           <Input
                             className="rounded"
@@ -282,13 +315,9 @@ const Actionscell = ({ item }: { item: application_type }) => {
                         <FormLabel>Residence</FormLabel>
                         <FormControl>
                           <Input
-                            type="number"
                             className="rounded"
                             placeholder="Austin,TX"
                             {...field}
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value))
-                            }
                           />
                         </FormControl>
                         <FormMessage />
@@ -308,20 +337,17 @@ const Actionscell = ({ item }: { item: application_type }) => {
                               (job) => job.id.toString() === value,
                             );
                             if (selectedJob) {
-                              field.onChange({
-                                id: selectedJob.id,
-                                title: selectedJob.title,
-                              });
+                              field.onChange(selectedJob);
                             }
                           }}
                           value={field.value?.id?.toString()}
                         >
                           <FormControl className="w-full rounded">
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a category" />
+                              <SelectValue placeholder="Select a job" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>{jobsOptions}</SelectContent>
+                          <SelectContent>{jobOptions}</SelectContent>
                         </Select>
                         <FormMessage />
                       </FormItem>
