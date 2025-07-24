@@ -1,7 +1,7 @@
 import "./App.css";
-
+import ApplicationTable from "./apps/application-tables/ApplicationTable";
 function App() {
-  return <></>;
+  return <ApplicationTable></ApplicationTable>;
 }
 
 export default App;

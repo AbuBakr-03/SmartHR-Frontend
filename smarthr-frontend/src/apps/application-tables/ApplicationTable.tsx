@@ -2,7 +2,7 @@ import { useListApplicationsPrivate } from "@/hooks/useApplication";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
-const MenuTable = () => {
+const ApplicationTable = () => {
   const listApplications = useListApplicationsPrivate();
   return (
     <div className="container mx-auto rounded-xl border-1 px-5 py-5">
@@ -12,4 +12,4 @@ const MenuTable = () => {
   );
 };
 
-export default MenuTable;
+export default ApplicationTable;
