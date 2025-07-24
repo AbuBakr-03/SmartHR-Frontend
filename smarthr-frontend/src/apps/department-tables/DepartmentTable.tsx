@@ -2,7 +2,7 @@ import { useListDepartmentsPrivate } from "@/hooks/useDepartment";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
-const CompanyTable = () => {
+const DepartmentTable = () => {
   const listDepartments = useListDepartmentsPrivate();
   return (
     <div className="container mx-auto rounded-xl border-1 px-5 py-5">
@@ -12,4 +12,4 @@ const CompanyTable = () => {
   );
 };
 
-export default CompanyTable;
+export default DepartmentTable;
