@@ -44,6 +44,7 @@ export const columns: ColumnDef<job_type>[] = [
         id: number;
         name: string;
         slug: string;
+        logo: string;
       };
       return <span>{company.name}</span>;
     },

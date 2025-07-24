@@ -9,15 +9,17 @@ const company_schema = z.object({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
-  logo: z.string(),
+  logo: z.string(), // Image URL from Django
 });
 
 const company_array_schema = z.array(company_schema);
 
 export type company_type = z.infer<typeof company_schema>;
 
-// Post type for creating jobs
-export type company_post_type = Omit<company_type, "id">;
+// Post type for creating companies - logo should be File for upload
+export type company_post_type = Omit<company_type, "id" | "logo"> & {
+  logo: File; // For file upload
+};
 
 // ========================================
 // PUBLIC FUNCTIONS (No authentication required)
@@ -82,8 +84,17 @@ export const createCompanyPrivate = async (
   companyData: company_post_type,
 ): Promise<company_type> => {
   try {
-    // Fixed: Use correct job endpoint, not application endpoint
-    const { data } = await axiosPrivate.post("company/", companyData);
+    // Create FormData for file upload
+    const formData = new FormData();
+    formData.append("name", companyData.name);
+    formData.append("slug", companyData.slug);
+    formData.append("logo", companyData.logo);
+
+    const { data } = await axiosPrivate.post("company/", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
     const result = company_schema.safeParse(data);
     if (result.success) {
@@ -123,10 +134,11 @@ export const updateCompanyPrivate = async (
   companyData: company_type,
 ): Promise<company_type> => {
   try {
-    // Fixed: Use correct job endpoint and fields
+    // For updates, we don't change the logo unless specifically provided
     const { data } = await axiosPrivate.patch(`company/${companyData.id}/`, {
       name: companyData.name,
       slug: companyData.slug,
+      // Note: logo updates would need separate handling with FormData if needed
     });
 
     const result = company_schema.safeParse(data);
