@@ -50,7 +50,7 @@ import {
   type VisibilityState,
   type ColumnFiltersState,
 } from "@tanstack/react-table";
-import { useCreateCompanyPrivate } from "@/hooks/useCompany";
+import { useCreateDepartmentPrivate } from "@/hooks/useDepartment";
 
 import { toast } from "sonner";
 
@@ -91,11 +91,8 @@ export function DataTable<TData, TValue>({
   });
 
   const schema = z.object({
-    name: z.string().min(1, "Company name is required"),
+    title: z.string().min(1, "Department title is required"),
     slug: z.string().min(1, "Slug is required"),
-    logo: z.any().refine((files) => {
-      return files?.[0] instanceof File;
-    }, "Please select a logo image"),
   });
 
   type FormData = z.infer<typeof schema>;
@@ -103,27 +100,22 @@ export function DataTable<TData, TValue>({
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      name: "",
+      title: "",
       slug: "",
-      logo: undefined,
     },
   });
 
-  const createCompany = useCreateCompanyPrivate();
+  const createDepartment = useCreateDepartmentPrivate();
 
   const onSubmit = async (data: FormData) => {
     try {
-      const formData = {
-        ...data,
-        logo: data.logo[0], // Get the File from FileList
-      };
-      console.log("Submitting company:", formData);
-      await createCompany.mutateAsync(formData, {
+      console.log("Submitting department:", data);
+      await createDepartment.mutateAsync(data, {
         onSuccess: () => {
-          toast.success(`Company "${formData.name}" created successfully`);
+          toast.success(`Department "${data.title}" created successfully`);
         },
         onError: () => {
-          toast.error("Error creating company");
+          toast.error("Error creating department");
         },
       });
 
@@ -140,9 +132,8 @@ export function DataTable<TData, TValue>({
     setIsDialogOpen(open);
     if (open) {
       form.reset({
-        name: "",
+        title: "",
         slug: "",
-        logo: undefined,
       });
     }
   };
@@ -151,10 +142,10 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex flex-1 flex-wrap items-center space-y-2 space-x-2 py-4">
         <Input
-          placeholder="Filter by name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter by title..."
+          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("title")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
@@ -165,14 +156,14 @@ export function DataTable<TData, TValue>({
           <DialogTrigger asChild>
             <Button size={"sm"} className="h-8 place-self-start lg:flex">
               <Plus className="h-4 w-4" />
-              New Company
+              New Department
             </Button>
           </DialogTrigger>
           <DialogContent className="max-h-[95vh] max-w-2xl overflow-y-auto md:max-w-3xl">
             <DialogHeader>
-              <DialogTitle>Create New Company</DialogTitle>
+              <DialogTitle>Create New Department</DialogTitle>
               <DialogDescription>
-                Add a new company to the system.
+                Add a new department to the system.
               </DialogDescription>
             </DialogHeader>
 
@@ -183,32 +174,14 @@ export function DataTable<TData, TValue>({
               >
                 <FormField
                   control={form.control}
-                  name="logo"
+                  name="title"
                   render={({ field }) => (
                     <FormItem className="col-span-2">
-                      <FormLabel>Logo</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => field.onChange(e.target.files)}
-                          className="cursor-pointer"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Company Name</FormLabel>
+                      <FormLabel>Department Title</FormLabel>
                       <FormControl>
                         <Input
                           className="rounded"
-                          placeholder="Acme Inc."
+                          placeholder="Information Technology"
                           {...field}
                         />
                       </FormControl>
@@ -226,7 +199,7 @@ export function DataTable<TData, TValue>({
                       <FormControl>
                         <Input
                           className="rounded"
-                          placeholder="acme_inc"
+                          placeholder="information_technology"
                           {...field}
                         />
                       </FormControl>
@@ -248,9 +221,11 @@ export function DataTable<TData, TValue>({
                 <Button
                   className="col-span-1"
                   type="submit"
-                  disabled={createCompany.isPending}
+                  disabled={createDepartment.isPending}
                 >
-                  {createCompany.isPending ? "Creating..." : "Create Company"}
+                  {createDepartment.isPending
+                    ? "Creating..."
+                    : "Create Department"}
                 </Button>
               </form>
             </Form>

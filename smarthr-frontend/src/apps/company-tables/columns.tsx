@@ -17,12 +17,7 @@ export const columns: ColumnDef<company_type>[] = [
       <DataTableColumnHeader column={column} title="Logo" />
     ),
     cell: ({ row }) => {
-      const company = row.getValue("company") as {
-        id: number;
-        name: string;
-        slug: string;
-        logo: string;
-      };
+      const company = row.original;
       return (
         <div className="flex flex-col items-center">
           <div className="flex items-center">

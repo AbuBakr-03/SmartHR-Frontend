@@ -44,15 +44,15 @@ import {
   DrawerDescription,
 } from "@/components/ui/drawer";
 
-import { type company_type } from "@/apis/companyapis";
+import { type department_type } from "@/apis/departmentapis";
 import {
-  useUpdateCompanyPrivate,
-  useDeleteCompanyPrivate,
-} from "@/hooks/useCompany";
+  useUpdateDepartmentPrivate,
+  useDeleteDepartmentPrivate,
+} from "@/hooks/useDepartment";
 
 import { toast } from "sonner";
 
-const Actionscell = ({ item }: { item: company_type }) => {
+const Actionscell = ({ item }: { item: department_type }) => {
   const [isDrawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [isDropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
@@ -94,9 +94,8 @@ const Actionscell = ({ item }: { item: company_type }) => {
 
   const schema = z.object({
     id: z.number(),
-    name: z.string().min(1, "Name is required"),
+    title: z.string().min(1, "Title is required"),
     slug: z.string().min(1, "Slug is required"),
-    logo: z.string(),
   });
 
   type FormData = z.infer<typeof schema>;
@@ -105,40 +104,39 @@ const Actionscell = ({ item }: { item: company_type }) => {
     resolver: zodResolver(schema),
     defaultValues: {
       id: item.id,
-      name: item.name,
+      title: item.title,
       slug: item.slug,
-      logo: item.logo,
     },
   });
 
-  const updateCompany = useUpdateCompanyPrivate();
-  const deleteCompany = useDeleteCompanyPrivate();
+  const updateDepartment = useUpdateDepartmentPrivate();
+  const deleteDepartment = useDeleteDepartmentPrivate();
 
   const onSubmit = (data: FormData) => {
-    console.log("Submitting company update:", data);
-    updateCompany.mutate(data, {
+    console.log("Submitting department update:", data);
+    updateDepartment.mutate(data, {
       onSuccess: () => {
         setDrawerOpen(false);
-        console.log("Company updated successfully");
-        toast.success("Company updated successfully");
+        console.log("Department updated successfully");
+        toast.success("Department updated successfully");
       },
       onError: (error) => {
-        console.error("Error updating company:", error);
-        toast.error("Error updating company");
+        console.error("Error updating department:", error);
+        toast.error("Error updating department");
       },
     });
   };
 
   const handleDeleteConfirm = () => {
-    deleteCompany.mutate(item.id, {
+    deleteDepartment.mutate(item.id, {
       onSuccess: () => {
         setDeleteDialogOpen(false);
-        console.log(`Company "${item.name}" deleted successfully`);
-        toast.success(`Company "${item.name}" deleted successfully`);
+        console.log(`Department "${item.title}" deleted successfully`);
+        toast.success(`Department "${item.title}" deleted successfully`);
       },
       onError: (error) => {
-        console.error("Error deleting company:", error);
-        toast.error(`Error deleting company`);
+        console.error("Error deleting department:", error);
+        toast.error(`Error deleting department`);
       },
     });
   };
@@ -171,23 +169,23 @@ const Actionscell = ({ item }: { item: company_type }) => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Are you sure you want to delete this company?
+              Are you sure you want to delete this department?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete "{item.name}" from your company list.
-              This action cannot be undone.
+              This will permanently delete "{item.title}" from your department
+              list. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteCompany.isPending}>
+            <AlertDialogCancel disabled={deleteDepartment.isPending}>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
-              disabled={deleteCompany.isPending}
+              disabled={deleteDepartment.isPending}
               className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
             >
-              {deleteCompany.isPending ? "Deleting..." : "Delete Company"}
+              {deleteDepartment.isPending ? "Deleting..." : "Delete Department"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -203,8 +201,10 @@ const Actionscell = ({ item }: { item: company_type }) => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <DrawerHeader className="flex-shrink-0 gap-1">
-                <DrawerTitle>{item.name}</DrawerTitle>
-                <DrawerDescription>Edit Company Information</DrawerDescription>
+                <DrawerTitle>{item.title}</DrawerTitle>
+                <DrawerDescription>
+                  Edit Department Information
+                </DrawerDescription>
               </DrawerHeader>
               <div
                 className={`flex flex-col gap-4 overflow-y-auto px-4 text-sm ${
@@ -216,14 +216,14 @@ const Actionscell = ({ item }: { item: company_type }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="name"
+                    name="title"
                     render={({ field }) => (
                       <FormItem className="col-span-2">
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>Title</FormLabel>
                         <FormControl>
                           <Input
                             className="rounded"
-                            placeholder="Company name"
+                            placeholder="Department title"
                             {...field}
                           />
                         </FormControl>
@@ -241,7 +241,7 @@ const Actionscell = ({ item }: { item: company_type }) => {
                         <FormControl>
                           <Input
                             className="rounded"
-                            placeholder="company_name"
+                            placeholder="department_title"
                             {...field}
                           />
                         </FormControl>
@@ -252,8 +252,8 @@ const Actionscell = ({ item }: { item: company_type }) => {
                 </div>
               </div>
               <DrawerFooter className="flex-shrink-0 pt-4">
-                <Button type="submit" disabled={updateCompany.isPending}>
-                  {updateCompany.isPending ? "Updating..." : "Update"}
+                <Button type="submit" disabled={updateDepartment.isPending}>
+                  {updateDepartment.isPending ? "Updating..." : "Update"}
                 </Button>
                 <DrawerClose asChild>
                   <Button variant="outline">Cancel</Button>
