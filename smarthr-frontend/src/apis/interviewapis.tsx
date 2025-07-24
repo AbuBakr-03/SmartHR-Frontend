@@ -47,10 +47,8 @@ export type interview_post_type = Omit<
   interview_video?: File | null;
 };
 
-export type interview_put_type = Omit<
-  interview_type,
-  "application" | "result" | "analysis_data" | "interview_questions"
-> & {
+export type interview_put_type = {
+  id: number;
   application_id: number;
   date?: string | null;
   external_meeting_link?: string | null;
