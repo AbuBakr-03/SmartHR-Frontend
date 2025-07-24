@@ -14,6 +14,7 @@ export const company_schema = z.object({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
+  logo: z.string(),
 });
 
 // Schema for department

@@ -39,6 +39,7 @@ export const columns: ColumnDef<application_type>[] = [
       const status = row.getValue("status") as {
         id: number;
         title: string;
+        slug: string;
       };
       return <span>{status.title}</span>;
     },

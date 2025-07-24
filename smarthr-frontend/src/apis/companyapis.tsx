@@ -9,6 +9,7 @@ const company_schema = z.object({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
+  logo: z.string(),
 });
 
 const company_array_schema = z.array(company_schema);

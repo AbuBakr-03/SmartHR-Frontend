@@ -113,7 +113,7 @@ export function DataTable<TData, TValue>({
     title: z.string().min(1, "Title is required"),
     location: z.string().min(1, "Location is required"),
     responsiblities: z.string().min(1, "Responsibilities are required"),
-    qualification: z.string().min(1, "Qualifications are required "),
+    qualification: z.string().min(1, "Qualifications are required"),
     nice_to_haves: z.string().min(1, "Nice to Haves are required"),
     end_date: z.date(),
     company_id: z.number().min(1, "Please select a company"),
@@ -132,7 +132,7 @@ export function DataTable<TData, TValue>({
       nice_to_haves: "",
       company_id: undefined,
       department_id: undefined,
-      end_date: new Date(),
+      end_date: undefined,
     },
   });
 
@@ -142,13 +142,13 @@ export function DataTable<TData, TValue>({
 
   const onSubmit = async (data: FormData) => {
     try {
-      console.log("Submitting application:", data);
+      console.log("Submitting job:", data);
       await createJob.mutateAsync(data, {
         onSuccess: () => {
-          toast.success(`Job for ${data.title} created successfully`);
+          toast.success(`Job "${data.title}" created successfully`);
         },
         onError: () => {
-          toast.error("Error creating application");
+          toast.error("Error creating job");
         },
       });
 
@@ -172,7 +172,7 @@ export function DataTable<TData, TValue>({
         nice_to_haves: "",
         company_id: undefined,
         department_id: undefined,
-        end_date: new Date(),
+        end_date: undefined,
       });
     }
   };
@@ -213,7 +213,7 @@ export function DataTable<TData, TValue>({
           <DialogContent className="max-h-[95vh] max-w-2xl overflow-y-auto md:max-w-3xl">
             <DialogHeader>
               <DialogTitle>Create New Job</DialogTitle>
-              <DialogDescription>Submit a new job.</DialogDescription>
+              <DialogDescription>Submit a new job posting.</DialogDescription>
             </DialogHeader>
 
             <Form {...form}>
@@ -226,9 +226,13 @@ export function DataTable<TData, TValue>({
                   name="title"
                   render={({ field }) => (
                     <FormItem className="col-span-2">
-                      <FormLabel>Title</FormLabel>
+                      <FormLabel>Job Title</FormLabel>
                       <FormControl>
-                        <Input className="rounded" {...field} />
+                        <Input
+                          className="rounded"
+                          placeholder="Software Engineer"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -240,11 +244,11 @@ export function DataTable<TData, TValue>({
                   name="location"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>Location</FormLabel>
                       <FormControl>
                         <Input
                           className="rounded"
-                          placeholder="john.doe@example.com"
+                          placeholder="Austin, TX"
                           {...field}
                         />
                       </FormControl>
@@ -258,7 +262,7 @@ export function DataTable<TData, TValue>({
                   name="end_date"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Last Date</FormLabel>
+                      <FormLabel>Application Deadline</FormLabel>
                       <Popover modal={false}>
                         <PopoverTrigger asChild>
                           <FormControl className="rounded">
@@ -331,6 +335,7 @@ export function DataTable<TData, TValue>({
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="department_id"
@@ -361,7 +366,7 @@ export function DataTable<TData, TValue>({
                       <FormLabel>Qualifications</FormLabel>
                       <FormControl className="rounded">
                         <Textarea
-                          placeholder="Job Qualifications"
+                          placeholder="Required qualifications and skills..."
                           className="resize-none"
                           rows={4}
                           {...field}
@@ -380,7 +385,7 @@ export function DataTable<TData, TValue>({
                       <FormLabel>Responsibilities</FormLabel>
                       <FormControl className="rounded">
                         <Textarea
-                          placeholder="Job Responsibilities"
+                          placeholder="Key responsibilities and duties..."
                           className="resize-none"
                           rows={4}
                           {...field}
@@ -399,7 +404,7 @@ export function DataTable<TData, TValue>({
                       <FormLabel>Nice to Haves</FormLabel>
                       <FormControl className="rounded">
                         <Textarea
-                          placeholder="Job Nice to Haves"
+                          placeholder="Preferred qualifications or bonus skills..."
                           className="resize-none"
                           rows={4}
                           {...field}
@@ -425,7 +430,7 @@ export function DataTable<TData, TValue>({
                   type="submit"
                   disabled={createJob.isPending}
                 >
-                  {createJob.isPending ? "Submitting..." : "Submit Job"}
+                  {createJob.isPending ? "Creating..." : "Create Job"}
                 </Button>
               </form>
             </Form>
