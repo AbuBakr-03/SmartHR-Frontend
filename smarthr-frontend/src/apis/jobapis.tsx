@@ -4,20 +4,8 @@ import { z } from "zod";
 
 const BASE_URL = "http://127.0.0.1:8000/api/job/";
 
-// Schema for company
-const company_schema = z.object({
-  id: z.number(),
-  name: z.string(),
-  slug: z.string(),
-});
-
-// Schema for department
-const department_schema = z.object({
-  id: z.number(),
-  title: z.string(),
-  slug: z.string(),
-});
-
+import { company_schema } from "./companyapis";
+import { department_schema } from "./departmentapis";
 // Schema for user (recruiter)
 const user_schema = z.object({
   id: z.number(),
@@ -25,7 +13,7 @@ const user_schema = z.object({
 });
 
 // Corrected job schema - matches serializer output
-const job_schema = z.object({
+export const job_schema = z.object({
   id: z.number(),
   title: z.string(),
   location: z.string(),

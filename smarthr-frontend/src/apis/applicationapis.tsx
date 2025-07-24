@@ -1,47 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { z } from "zod";
+import { job_schema } from "./jobapis";
 
 // Schema for status
 export const status_schema = z.object({
   id: z.number(),
   title: z.string(),
   slug: z.string(),
-});
-
-// Schema for company
-export const company_schema = z.object({
-  id: z.number(),
-  name: z.string(),
-  slug: z.string(),
-  logo: z.string(),
-});
-
-// Schema for department
-export const department_schema = z.object({
-  id: z.number(),
-  title: z.string(),
-  slug: z.string(),
-});
-
-// Schema for user (recruiter)
-export const user_schema = z.object({
-  id: z.number(),
-  username: z.string(),
-});
-
-// Corrected job schema - matches serializer output
-export const job_schema = z.object({
-  id: z.number(),
-  title: z.string(),
-  location: z.string(),
-  responsiblities: z.string(), // Note: keeping the typo as it exists in the model
-  qualification: z.string(), // Fixed: removed 's'
-  nice_to_haves: z.string(),
-  end_date: z.coerce.date(),
-  company: company_schema,
-  department: department_schema,
-  recruiter: user_schema.nullable(), // Added missing recruiter field
 });
 
 // Corrected application schema

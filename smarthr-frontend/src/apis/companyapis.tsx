@@ -5,7 +5,7 @@ import { z } from "zod";
 const BASE_URL = "http://127.0.0.1:8000/api/company/";
 
 // Schema for company
-const company_schema = z.object({
+export const company_schema = z.object({
   id: z.number(),
   name: z.string(),
   slug: z.string(),

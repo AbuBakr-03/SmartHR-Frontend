@@ -9,11 +9,11 @@ export const result_schema = z.object({
   slug: z.string(),
 });
 
-export const analysis_data_schema = z.object({
-  emotions: z.record(z.string(), z.number()),
-  confidence: z.number(),
-  result: z.number(),
-});
+// Make analysis_data more flexible to handle dynamic JSON
+export const analysis_data_schema = z.any().nullable();
+// Since analysis_data is a Django JSONField that can contain any JSON structure (objects, arrays, primitives), z.any().nullable() is the most appropriate choice. This allows the field to be:
+// null (when no analysis has been done)
+// Any valid JSON structure (object, array, string, number, boolean)
 
 export const interview_question_schema = z.object({
   category: z.string(),
@@ -27,9 +27,11 @@ export const interview_schema = z.object({
   result: result_schema,
   external_meeting_link: z.string().nullable(),
   interview_video: z.string().nullable(),
-  analysis_data: analysis_data_schema.nullable().optional(),
-  interview_question: z.array(interview_question_schema).nullable().optional(),
+  analysis_data: analysis_data_schema.optional(),
+  // Fixed: Changed from 'interview_question' to 'interview_questions' to match model
+  interview_questions: z.array(interview_question_schema).nullable().optional(),
 });
+
 const interview_array_schema = z.array(interview_schema);
 
 export type interview_type = z.infer<typeof interview_schema>;
@@ -37,7 +39,7 @@ export type interview_type = z.infer<typeof interview_schema>;
 // Corrected post type - removed status_id (backend sets default)
 export type interview_post_type = Omit<
   interview_type,
-  "id" | "result" | "analysis_data" | "interview_question"
+  "id" | "application" | "result" | "analysis_data" | "interview_questions"
 > & {
   application_id: number;
   date?: string | null;
@@ -47,9 +49,8 @@ export type interview_post_type = Omit<
 
 export type interview_put_type = Omit<
   interview_type,
-  "result" | "analysis_data" | "interview_question"
+  "application" | "result" | "analysis_data" | "interview_questions"
 > & {
-  id: number;
   application_id: number;
   date?: string | null;
   external_meeting_link?: string | null;
@@ -83,18 +84,22 @@ export const createInterviewPrivate = async (
     // Create FormData for file upload
     const formData = new FormData();
     formData.append("application_id", interviewData.application_id.toString());
+
     if (interviewData.date) {
       formData.append("date", interviewData.date);
     }
+
     if (interviewData.external_meeting_link) {
       formData.append(
         "external_meeting_link",
         interviewData.external_meeting_link,
       );
     }
+
     if (interviewData.interview_video) {
       formData.append("interview_video", interviewData.interview_video);
     }
+
     const { data } = await axiosPrivate.post("interview/", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -142,21 +147,30 @@ export const updateInterviewPrivate = async (
   try {
     const formData = new FormData();
     formData.append("application_id", interviewData.application_id.toString());
+
     if (interviewData.date) {
       formData.append("date", interviewData.date);
     }
+
     if (interviewData.external_meeting_link) {
       formData.append(
         "external_meeting_link",
         interviewData.external_meeting_link,
       );
     }
+
     if (interviewData.interview_video) {
       formData.append("interview_video", interviewData.interview_video);
     }
+
     const { data } = await axiosPrivate.patch(
       `interview/${interviewData.id}/`,
       formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
     );
 
     const result = interview_schema.safeParse(data);
@@ -184,13 +198,14 @@ export const deleteInterviewPrivate = async (
   }
 };
 
+// Enhanced schema for interview recording analysis
 const interview_recording_schema = z.object({
   success: z.boolean(),
   message: z.string(),
-  emotions: z.record(z.string(), z.number()),
-  confidence: z.number(),
-  result_id: z.number(),
-  result_title: z.string(),
+  emotions: z.record(z.string(), z.number()).optional(),
+  confidence: z.number().optional(),
+  result_id: z.number().optional(),
+  result_title: z.string().optional(),
 });
 
 export type interview_recording_type = z.infer<
@@ -209,6 +224,7 @@ export const analyzeInterviewRecordingPrivate = async (
       `interview/${id}/analyze-recording/`,
       { interview_id: id },
     );
+
     const result = interview_recording_schema.safeParse(data);
     if (result.success) {
       return result.data;
@@ -225,7 +241,14 @@ export const analyzeInterviewRecordingPrivate = async (
 const generate_interview_schema = z.object({
   success: z.boolean(),
   message: z.string(),
-  questions: z.array(z.object({ category: z.string(), question: z.string() })),
+  questions: z
+    .array(
+      z.object({
+        category: z.string(),
+        question: z.string(),
+      }),
+    )
+    .optional(),
 });
 
 export type generate_interview_type = z.infer<typeof generate_interview_schema>;
