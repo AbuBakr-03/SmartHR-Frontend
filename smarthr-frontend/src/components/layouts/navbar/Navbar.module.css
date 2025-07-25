@@ -1,0 +1,44 @@
+.container {
+  display: grid;
+  grid-template-columns: 2fr 10fr;
+  grid-template-areas: "logo links";
+  justify-content: center;
+  align-items: center;
+}
+
+.container2 {
+  display: grid;
+  grid-template-columns: 2fr 6fr 2fr;
+  grid-template-areas: "logo links2 button2";
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  grid-area: logo;
+  align-self: center;
+}
+
+.links2 {
+  grid-area: links2;
+}
+
+.button2 {
+  grid-area: button2;
+  display: grid;
+  grid-template-columns: 1fr 1fr 4fr;
+}
+
+.links {
+  grid-area: links;
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  grid-template-areas: "normallink buttonlink";
+}
+
+.normal {
+  grid-area: normallink;
+}
+.buttonlink {
+  grid-area: buttonlink;
+}
