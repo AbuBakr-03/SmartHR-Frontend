@@ -37,14 +37,11 @@ const interview_array_schema = z.array(interview_schema);
 export type interview_type = z.infer<typeof interview_schema>;
 
 // Corrected post type - removed status_id (backend sets default)
-export type interview_post_type = Omit<
-  interview_type,
-  "id" | "application" | "result" | "analysis_data" | "interview_questions"
-> & {
+export type interview_post_type = {
   application_id: number;
-  date?: string | null;
-  external_meeting_link?: string | null;
-  interview_video?: File | null;
+  date: string | null;
+  external_meeting_link: string | null;
+  interview_video: File | null;
 };
 
 export type interview_put_type = {
