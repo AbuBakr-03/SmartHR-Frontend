@@ -1,6 +1,6 @@
 import Home from "./pages/Home";
 import { Routes, Route } from "react-router-dom";
-
+import JobBoard from "./pages/JobBoard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Layout from "./components/layouts/Layout";
@@ -21,6 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index={true} element={<Home />}></Route>
+          <Route path="job" element={<JobBoard />}></Route>
           <Route path="log-in" element={<Login />}></Route>
           <Route path="sign-up" element={<Signup />}></Route>
         </Route>
@@ -36,6 +37,16 @@ function App() {
             </Route>
           </Route>
           <Route element={<RequireAuth allowedRole={"Recruiter"} />}>
+            <Route path="dashboard/" element={<Dashboard />}>
+              <Route path="applications" element={<ApplicationTable />}></Route>
+              <Route path="companies" element={<CompanyTable />}></Route>
+              <Route path="departments" element={<DepartmentTable />}></Route>
+              <Route path="interviews" element={<InterviewTable />}></Route>
+              <Route path="jobs" element={<JobTable />}></Route>
+              <Route index={true} element={<PredictedTable />}></Route>
+            </Route>
+          </Route>
+          <Route element={<RequireAuth allowedRole={"user"} />}>
             <Route path="dashboard/" element={<Dashboard />}>
               <Route path="applications" element={<ApplicationTable />}></Route>
               <Route path="companies" element={<CompanyTable />}></Route>

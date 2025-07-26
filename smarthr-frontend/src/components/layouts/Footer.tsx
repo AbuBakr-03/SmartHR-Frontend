@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
             </Link>
           </li>
           <li>
-            <Link className="text-slate-400 hover:text-white" to={"/jobs"}>
+            <Link className="text-slate-400 hover:text-white" to={"/job"}>
               Job Board
             </Link>
           </li>

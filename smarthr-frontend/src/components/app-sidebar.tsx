@@ -77,7 +77,7 @@ const data = {
         },
         {
           title: "Predicted Candidates",
-          url: "/dashboard/predicted-candidates",
+          url: "/dashboard",
         },
       ],
     },
@@ -87,6 +87,20 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const authContext = useAuth();
   const { auth } = authContext;
+
+  // Define which roles can perform actions
+  const canPerformActions =
+    auth?.role === "admin" || auth?.role === "Recruiter";
+
+  const new_navmain = canPerformActions
+    ? data.navMain
+    : data.navMain.map((dashboard) => ({
+        ...dashboard,
+        items: dashboard.items
+          .filter((item) => item.title !== "Companies")
+          .filter((item) => item.title !== "Departments")
+          .filter((item) => item.title !== "Job Openings"),
+      }));
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -104,10 +118,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={new_navmain} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={auth.user} />
+        <p>{auth.role}</p>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

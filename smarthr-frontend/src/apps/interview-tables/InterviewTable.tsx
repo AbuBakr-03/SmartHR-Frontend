@@ -8,6 +8,7 @@ import {
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthProvider";
 
 /**
  * Interview Table Component
@@ -189,6 +190,18 @@ const InterviewTable = () => {
     generatingIds, // Array of IDs currently generating questions
   );
 
+  const authContext = useAuth();
+  const { auth } = authContext;
+
+  // Define which roles can perform actions
+  const canPerformActions =
+    auth?.role === "admin" || auth?.role === "Recruiter";
+
+  // Filter columns based on permissions
+  const tableColumns2 = canPerformActions
+    ? tableColumns
+    : tableColumns.filter((col) => col.id !== "actions");
+
   // ============================================================================
   // RENDER - Display the complete table interface
   // ============================================================================
@@ -203,7 +216,7 @@ const InterviewTable = () => {
       {/* WHY: This renders all the interview data in table format */}
       {/* HOW: Pass our configured columns and the interview data */}
       <DataTable
-        columns={tableColumns} // Our column definitions with callbacks
+        columns={tableColumns2} // Our column definitions with callbacks
         data={listInterviews.data ?? []} // Interview data (empty array if loading)
       />
 

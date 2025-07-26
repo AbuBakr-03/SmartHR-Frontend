@@ -63,6 +63,7 @@ import { useCreateApplicationPrivate } from "@/hooks/useApplication";
 import { useListJobsPrivate } from "@/hooks/useJob";
 import { toast } from "sonner";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
+import { useAuth } from "@/contexts/AuthProvider";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -175,6 +176,15 @@ export function DataTable<TData, TValue>({
     </SelectItem>
   ));
 
+  const authContext = useAuth();
+  const { auth } = authContext;
+
+  // Define which roles can perform actions
+  const canPerformActions =
+    auth?.role === "admin" || auth?.role === "Recruiter";
+
+  // Filter columns based on permissions
+
   return (
     <div>
       <div className="flex flex-1 flex-wrap items-center space-y-2 space-x-2 py-4">
@@ -195,164 +205,167 @@ export function DataTable<TData, TValue>({
         )}
 
         <DataTableViewOptions table={table} />
+        {canPerformActions && (
+          <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
+            <DialogTrigger asChild>
+              <Button size={"sm"} className="h-8 place-self-start lg:flex">
+                <Plus className="h-4 w-4" />
+                New Application
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-h-[95vh] max-w-2xl overflow-y-auto md:max-w-3xl">
+              <DialogHeader>
+                <DialogTitle>Create New Application</DialogTitle>
+                <DialogDescription>
+                  Submit a new job application.
+                </DialogDescription>
+              </DialogHeader>
 
-        <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
-          <DialogTrigger asChild>
-            <Button size={"sm"} className="h-8 place-self-start lg:flex">
-              <Plus className="h-4 w-4" />
-              New Application
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-h-[95vh] max-w-2xl overflow-y-auto md:max-w-3xl">
-            <DialogHeader>
-              <DialogTitle>Create New Application</DialogTitle>
-              <DialogDescription>
-                Submit a new job application.
-              </DialogDescription>
-            </DialogHeader>
-
-            <Form {...form}>
-              <form
-                className="grid grid-cols-2 gap-4"
-                onSubmit={form.handleSubmit(onSubmit)}
-              >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Full Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="rounded"
-                          placeholder="John Doe"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="rounded"
-                          placeholder="john.doe@example.com"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="residence"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Residence</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="rounded"
-                          placeholder="Austin, TX"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="job_id"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Job Position</FormLabel>
-                      <Select
-                        onValueChange={(value) => field.onChange(Number(value))}
-                        value={field.value?.toString() || ""}
-                      >
-                        <FormControl className="w-full rounded">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a job position" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>{jobOptions}</SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="resume"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Resume</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept=".pdf,.doc,.docx"
-                          onChange={(e) => field.onChange(e.target.files)}
-                          className="cursor-pointer"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="cover_letter"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Cover Letter</FormLabel>
-                      <FormControl className="rounded">
-                        <Textarea
-                          placeholder="Tell us why you're interested in this position..."
-                          className="resize-none"
-                          rows={4}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <DialogClose asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="col-span-1"
-                  >
-                    Cancel
-                  </Button>
-                </DialogClose>
-
-                <Button
-                  className="col-span-1"
-                  type="submit"
-                  disabled={createApplication.isPending}
+              <Form {...form}>
+                <form
+                  className="grid grid-cols-2 gap-4"
+                  onSubmit={form.handleSubmit(onSubmit)}
                 >
-                  {createApplication.isPending
-                    ? "Submitting..."
-                    : "Submit Application"}
-                </Button>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="rounded"
+                            placeholder="John Doe"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="rounded"
+                            placeholder="john.doe@example.com"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="residence"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Residence</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="rounded"
+                            placeholder="Austin, TX"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="job_id"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>Job Position</FormLabel>
+                        <Select
+                          onValueChange={(value) =>
+                            field.onChange(Number(value))
+                          }
+                          value={field.value?.toString() || ""}
+                        >
+                          <FormControl className="w-full rounded">
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a job position" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>{jobOptions}</SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="resume"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>Resume</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            onChange={(e) => field.onChange(e.target.files)}
+                            className="cursor-pointer"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="cover_letter"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>Cover Letter</FormLabel>
+                        <FormControl className="rounded">
+                          <Textarea
+                            placeholder="Tell us why you're interested in this position..."
+                            className="resize-none"
+                            rows={4}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <DialogClose asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="col-span-1"
+                    >
+                      Cancel
+                    </Button>
+                  </DialogClose>
+
+                  <Button
+                    className="col-span-1"
+                    type="submit"
+                    disabled={createApplication.isPending}
+                  >
+                    {createApplication.isPending
+                      ? "Submitting..."
+                      : "Submit Application"}
+                  </Button>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       <div className="rounded-md border">

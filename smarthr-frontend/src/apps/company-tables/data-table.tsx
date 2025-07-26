@@ -53,6 +53,7 @@ import {
 import { useCreateCompanyPrivate } from "@/hooks/useCompany";
 
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthProvider";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -147,6 +148,13 @@ export function DataTable<TData, TValue>({
     }
   };
 
+  const authContext = useAuth();
+  const { auth } = authContext;
+
+  // Define which roles can perform actions
+  const canPerformActions =
+    auth?.role === "admin" || auth?.role === "Recruiter";
+
   return (
     <div>
       <div className="flex flex-1 flex-wrap items-center space-y-2 space-x-2 py-4">
@@ -160,102 +168,103 @@ export function DataTable<TData, TValue>({
         />
 
         <DataTableViewOptions table={table} />
+        {canPerformActions && (
+          <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
+            <DialogTrigger asChild>
+              <Button size={"sm"} className="h-8 place-self-start lg:flex">
+                <Plus className="h-4 w-4" />
+                New Company
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-h-[95vh] max-w-2xl overflow-y-auto md:max-w-3xl">
+              <DialogHeader>
+                <DialogTitle>Create New Company</DialogTitle>
+                <DialogDescription>
+                  Add a new company to the system.
+                </DialogDescription>
+              </DialogHeader>
 
-        <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
-          <DialogTrigger asChild>
-            <Button size={"sm"} className="h-8 place-self-start lg:flex">
-              <Plus className="h-4 w-4" />
-              New Company
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-h-[95vh] max-w-2xl overflow-y-auto md:max-w-3xl">
-            <DialogHeader>
-              <DialogTitle>Create New Company</DialogTitle>
-              <DialogDescription>
-                Add a new company to the system.
-              </DialogDescription>
-            </DialogHeader>
-
-            <Form {...form}>
-              <form
-                className="grid grid-cols-2 gap-4"
-                onSubmit={form.handleSubmit(onSubmit)}
-              >
-                <FormField
-                  control={form.control}
-                  name="logo"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Logo</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => field.onChange(e.target.files)}
-                          className="cursor-pointer"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Company Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="rounded"
-                          placeholder="Acme Inc."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="slug"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Slug</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="rounded"
-                          placeholder="acme_inc"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <DialogClose asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="col-span-1"
-                  >
-                    Cancel
-                  </Button>
-                </DialogClose>
-
-                <Button
-                  className="col-span-1"
-                  type="submit"
-                  disabled={createCompany.isPending}
+              <Form {...form}>
+                <form
+                  className="grid grid-cols-2 gap-4"
+                  onSubmit={form.handleSubmit(onSubmit)}
                 >
-                  {createCompany.isPending ? "Creating..." : "Create Company"}
-                </Button>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
+                  <FormField
+                    control={form.control}
+                    name="logo"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>Logo</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => field.onChange(e.target.files)}
+                            className="cursor-pointer"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>Company Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="rounded"
+                            placeholder="Acme Inc."
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="slug"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>Slug</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="rounded"
+                            placeholder="acme_inc"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <DialogClose asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="col-span-1"
+                    >
+                      Cancel
+                    </Button>
+                  </DialogClose>
+
+                  <Button
+                    className="col-span-1"
+                    type="submit"
+                    disabled={createCompany.isPending}
+                  >
+                    {createCompany.isPending ? "Creating..." : "Create Company"}
+                  </Button>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       <div className="rounded-md border">

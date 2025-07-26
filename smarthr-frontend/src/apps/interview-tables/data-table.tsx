@@ -71,6 +71,7 @@ import {
 import { useCreateInterviewPrivate } from "@/hooks/useInterview";
 import { useListApplicationsPrivate } from "@/hooks/useApplication";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthProvider";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -176,6 +177,13 @@ export function DataTable<TData, TValue>({
     </SelectItem>
   ));
 
+  const authContext = useAuth();
+  const { auth } = authContext;
+
+  // Define which roles can perform actions
+  const canPerformActions =
+    auth?.role === "admin" || auth?.role === "Recruiter";
+
   return (
     <div>
       <div className="flex flex-1 flex-wrap items-center space-y-2 space-x-2 py-4">
@@ -199,167 +207,174 @@ export function DataTable<TData, TValue>({
 
         <DataTableViewOptions table={table} />
 
-        <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
-          <DialogTrigger asChild>
-            <Button size={"sm"} className="h-8 place-self-start lg:flex">
-              <Plus className="h-4 w-4" />
-              New Interview
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-h-[95vh] max-w-2xl overflow-y-auto md:max-w-3xl">
-            <DialogHeader>
-              <DialogTitle>Schedule New Interview</DialogTitle>
-              <DialogDescription>
-                Schedule an interview for an application.
-              </DialogDescription>
-            </DialogHeader>
+        {canPerformActions && (
+          <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
+            <DialogTrigger asChild>
+              <Button size={"sm"} className="h-8 place-self-start lg:flex">
+                <Plus className="h-4 w-4" />
+                New Interview
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-h-[95vh] max-w-2xl overflow-y-auto md:max-w-3xl">
+              <DialogHeader>
+                <DialogTitle>Schedule New Interview</DialogTitle>
+                <DialogDescription>
+                  Schedule an interview for an application.
+                </DialogDescription>
+              </DialogHeader>
 
-            <Form {...form}>
-              <form
-                className="grid grid-cols-2 gap-4"
-                onSubmit={form.handleSubmit(onSubmit)}
-              >
-                <FormField
-                  control={form.control}
-                  name="application_id"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Application</FormLabel>
-                      <Select
-                        onValueChange={(value) => field.onChange(Number(value))}
-                        value={field.value?.toString() || ""}
-                      >
-                        <FormControl className="w-full rounded">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select an application" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>{applicationOptions}</SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="date"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2 flex flex-col">
-                      <FormLabel>Interview Date & Time</FormLabel>
-                      <Popover modal={false}>
-                        <PopoverTrigger asChild>
-                          <FormControl className="rounded">
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP 'at' p")
-                              ) : (
-                                <span>Pick interview date and time</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-auto p-0"
-                          align="start"
-                          side="bottom"
-                          sideOffset={8}
-                          avoidCollisions={true}
-                          onOpenAutoFocus={(e) => e.preventDefault()}
-                          onCloseAutoFocus={(e) => e.preventDefault()}
-                        >
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(date) => {
-                              if (date) {
-                                // Set time to current time if not already set
-                                const now = new Date();
-                                date.setHours(now.getHours(), now.getMinutes());
-                                const fixedDate = new Date(
-                                  date.getTime() -
-                                    date.getTimezoneOffset() * 60000,
-                                );
-                                field.onChange(fixedDate);
-                              }
-                            }}
-                            disabled={(date) => date < new Date("1900-01-01")}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="external_meeting_link"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Meeting Link (Optional)</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="rounded"
-                          placeholder="https://zoom.us/j/123456789"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="interview_video"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>Interview Video (Optional)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept="video/*"
-                          onChange={(e) => field.onChange(e.target.files)}
-                          className="cursor-pointer"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <DialogClose asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="col-span-1"
-                  >
-                    Cancel
-                  </Button>
-                </DialogClose>
-
-                <Button
-                  className="col-span-1"
-                  type="submit"
-                  disabled={createInterview.isPending}
+              <Form {...form}>
+                <form
+                  className="grid grid-cols-2 gap-4"
+                  onSubmit={form.handleSubmit(onSubmit)}
                 >
-                  {createInterview.isPending
-                    ? "Scheduling..."
-                    : "Schedule Interview"}
-                </Button>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
+                  <FormField
+                    control={form.control}
+                    name="application_id"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>Application</FormLabel>
+                        <Select
+                          onValueChange={(value) =>
+                            field.onChange(Number(value))
+                          }
+                          value={field.value?.toString() || ""}
+                        >
+                          <FormControl className="w-full rounded">
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select an application" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>{applicationOptions}</SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="date"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2 flex flex-col">
+                        <FormLabel>Interview Date & Time</FormLabel>
+                        <Popover modal={false}>
+                          <PopoverTrigger asChild>
+                            <FormControl className="rounded">
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground",
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP 'at' p")
+                                ) : (
+                                  <span>Pick interview date and time</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-auto p-0"
+                            align="start"
+                            side="bottom"
+                            sideOffset={8}
+                            avoidCollisions={true}
+                            onOpenAutoFocus={(e) => e.preventDefault()}
+                            onCloseAutoFocus={(e) => e.preventDefault()}
+                          >
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(date) => {
+                                if (date) {
+                                  // Set time to current time if not already set
+                                  const now = new Date();
+                                  date.setHours(
+                                    now.getHours(),
+                                    now.getMinutes(),
+                                  );
+                                  const fixedDate = new Date(
+                                    date.getTime() -
+                                      date.getTimezoneOffset() * 60000,
+                                  );
+                                  field.onChange(fixedDate);
+                                }
+                              }}
+                              disabled={(date) => date < new Date("1900-01-01")}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="external_meeting_link"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>Meeting Link (Optional)</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="rounded"
+                            placeholder="https://zoom.us/j/123456789"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="interview_video"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>Interview Video (Optional)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="file"
+                            accept="video/*"
+                            onChange={(e) => field.onChange(e.target.files)}
+                            className="cursor-pointer"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <DialogClose asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="col-span-1"
+                    >
+                      Cancel
+                    </Button>
+                  </DialogClose>
+
+                  <Button
+                    className="col-span-1"
+                    type="submit"
+                    disabled={createInterview.isPending}
+                  >
+                    {createInterview.isPending
+                      ? "Scheduling..."
+                      : "Schedule Interview"}
+                  </Button>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       <div className="rounded-md border">
