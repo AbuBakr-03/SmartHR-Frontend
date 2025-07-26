@@ -131,7 +131,8 @@ const Actionscell = ({ item }: { item: job_type }) => {
         id: z.number(),
         username: z.string(),
       })
-      .nullable(),
+      .nullable()
+      .optional(),
   });
 
   type FormData = z.infer<typeof schema>;
@@ -159,7 +160,15 @@ const Actionscell = ({ item }: { item: job_type }) => {
 
   const onSubmit = (data: FormData) => {
     console.log("Submitting job update:", data);
-    updateJob.mutate(data, {
+    const updateData = {
+      ...data,
+      company: {
+        ...data.company,
+        logo: item.company.logo, // Add the logo from the original item
+      },
+    };
+
+    updateJob.mutate(updateData, {
       onSuccess: () => {
         setDrawerOpen(false);
         console.log("Job updated successfully");
@@ -253,7 +262,14 @@ const Actionscell = ({ item }: { item: job_type }) => {
         onOpenChange={handleDrawerClose}
         direction={isMobile ? "bottom" : "right"}
       >
-        <DrawerContent className={isMobile ? "min-h-[92.5vh]" : ""}>
+        <DrawerContent
+          className={
+            isMobile
+              ? "min-h-[92.5vh]"
+              : "max-h-screen overflow-x-hidden overflow-y-auto"
+          }
+        >
+          {" "}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <DrawerHeader className="flex-shrink-0 gap-1">

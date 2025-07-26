@@ -236,7 +236,7 @@ const Actionscell = ({ item }: { item: company_type }) => {
                     control={form.control}
                     name="slug"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="col-span-2">
                         <FormLabel>Slug</FormLabel>
                         <FormControl>
                           <Input

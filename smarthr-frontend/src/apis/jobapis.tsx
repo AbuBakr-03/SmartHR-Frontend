@@ -6,6 +6,7 @@ const BASE_URL = "http://127.0.0.1:8000/api/job/";
 
 import { company_schema } from "./companyapis";
 import { department_schema } from "./departmentapis";
+
 // Schema for user (recruiter)
 const user_schema = z.object({
   id: z.number(),
@@ -23,7 +24,7 @@ export const job_schema = z.object({
   end_date: z.coerce.date(),
   company: company_schema,
   department: department_schema,
-  recruiter: user_schema.nullable(),
+  recruiter: user_schema.nullable().optional(),
 });
 
 const job_array_schema = z.array(job_schema);

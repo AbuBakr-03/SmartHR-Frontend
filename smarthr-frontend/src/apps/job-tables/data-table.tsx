@@ -318,7 +318,7 @@ export function DataTable<TData, TValue>({
                   control={form.control}
                   name="company_id"
                   render={({ field }) => (
-                    <FormItem className="col-span-2">
+                    <FormItem>
                       <FormLabel>Company</FormLabel>
                       <Select
                         onValueChange={(value) => field.onChange(Number(value))}
@@ -340,7 +340,7 @@ export function DataTable<TData, TValue>({
                   control={form.control}
                   name="department_id"
                   render={({ field }) => (
-                    <FormItem className="col-span-2">
+                    <FormItem>
                       <FormLabel>Department</FormLabel>
                       <Select
                         onValueChange={(value) => field.onChange(Number(value))}
@@ -368,7 +368,7 @@ export function DataTable<TData, TValue>({
                         <Textarea
                           placeholder="Required qualifications and skills..."
                           className="resize-none"
-                          rows={4}
+                          rows={6}
                           {...field}
                         />
                       </FormControl>
@@ -387,7 +387,7 @@ export function DataTable<TData, TValue>({
                         <Textarea
                           placeholder="Key responsibilities and duties..."
                           className="resize-none"
-                          rows={4}
+                          rows={6}
                           {...field}
                         />
                       </FormControl>
@@ -406,7 +406,7 @@ export function DataTable<TData, TValue>({
                         <Textarea
                           placeholder="Preferred qualifications or bonus skills..."
                           className="resize-none"
-                          rows={4}
+                          rows={6}
                           {...field}
                         />
                       </FormControl>

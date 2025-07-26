@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-
+import { status } from "./ApplicationData";
 import { DataTablePagination } from "@/components/data-table-pagination";
 import { DataTableViewOptions } from "@/components/data-table-visibility";
 
@@ -62,6 +62,7 @@ import {
 import { useCreateApplicationPrivate } from "@/hooks/useApplication";
 import { useListJobsPrivate } from "@/hooks/useJob";
 import { toast } from "sonner";
+import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -185,6 +186,13 @@ export function DataTable<TData, TValue>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
+        {table.getColumn("status") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("status")}
+            title="Status"
+            options={status}
+          />
+        )}
 
         <DataTableViewOptions table={table} />
 

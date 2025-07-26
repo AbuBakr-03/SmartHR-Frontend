@@ -131,7 +131,8 @@ const Actionscell = ({ item }: { item: application_type }) => {
           id: z.number(),
           username: z.string(),
         })
-        .nullable(),
+        .nullable()
+        .optional(),
     }),
     status: z.object({
       id: z.number(),
@@ -162,8 +163,18 @@ const Actionscell = ({ item }: { item: application_type }) => {
   const { data: jobs } = useListJobsPrivate();
 
   const onSubmit = (data: FormData) => {
+    const updateData = {
+      ...data,
+      job: {
+        ...data.job,
+        company: {
+          ...data.job.company,
+          logo: item.job.company.logo, // Add the logo from the original item
+        }, // Add the logo from the original item
+      },
+    };
     console.log("Submitting application update:", data);
-    updateApplication.mutate(data, {
+    updateApplication.mutate(updateData, {
       onSuccess: () => {
         setDrawerOpen(false);
         console.log("Application updated successfully");

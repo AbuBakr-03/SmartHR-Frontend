@@ -91,6 +91,11 @@ export const createApplicationPrivate = async (
     }
   } catch (error) {
     console.error("Create application error:", error);
+    if (error && typeof error === "object" && "response" in error) {
+      const axiosError = error as any;
+      console.error("Error response data:", axiosError.response?.data);
+      console.error("Error response status:", axiosError.response?.status);
+    }
     throw error;
   }
 };

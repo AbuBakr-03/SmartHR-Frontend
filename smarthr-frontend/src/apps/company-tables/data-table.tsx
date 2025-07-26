@@ -221,7 +221,7 @@ export function DataTable<TData, TValue>({
                   control={form.control}
                   name="slug"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="col-span-2">
                       <FormLabel>Slug</FormLabel>
                       <FormControl>
                         <Input

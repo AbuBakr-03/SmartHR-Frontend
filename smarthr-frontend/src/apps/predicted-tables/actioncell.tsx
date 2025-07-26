@@ -258,7 +258,11 @@ const Actionscell = ({ item }: { item: predicted_type }) => {
         onOpenChange={handleEvaluateDrawerClose}
         direction={isMobile ? "bottom" : "right"}
       >
-        <DrawerContent className={isMobile ? "min-h-[92.5vh]" : ""}>
+        <DrawerContent
+          className={
+            isMobile ? "min-h-[92.5vh]" : "overflow-x-hidden overflow-y-scroll"
+          }
+        >
           <Form {...evaluationForm}>
             <form onSubmit={evaluationForm.handleSubmit(onEvaluationSubmit)}>
               <DrawerHeader className="flex-shrink-0 gap-1">
