@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { DataTablePagination } from "@/components/data-table-pagination";
 import { DataTableViewOptions } from "@/components/data-table-visibility";
+import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
+import { result } from "./InterviewData";
 
 import {
   Table,
@@ -187,6 +189,13 @@ export function DataTable<TData, TValue>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
+        {table.getColumn("result") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("result")}
+            title="Result"
+            options={result}
+          />
+        )}
 
         <DataTableViewOptions table={table} />
 

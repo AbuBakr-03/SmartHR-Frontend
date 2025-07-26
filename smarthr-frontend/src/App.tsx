@@ -32,10 +32,7 @@ function App() {
               <Route path="departments" element={<DepartmentTable />}></Route>
               <Route path="interviews" element={<InterviewTable />}></Route>
               <Route path="jobs" element={<JobTable />}></Route>
-              <Route
-                path="predicted-candidates"
-                element={<PredictedTable />}
-              ></Route>
+              <Route index={true} element={<PredictedTable />}></Route>
             </Route>
           </Route>
           <Route element={<RequireAuth allowedRole={"Recruiter"} />}>
@@ -45,10 +42,7 @@ function App() {
               <Route path="departments" element={<DepartmentTable />}></Route>
               <Route path="interviews" element={<InterviewTable />}></Route>
               <Route path="jobs" element={<JobTable />}></Route>
-              <Route
-                path="predicted-candidates"
-                element={<PredictedTable />}
-              ></Route>
+              <Route index={true} element={<PredictedTable />}></Route>
             </Route>
           </Route>
         </Route>

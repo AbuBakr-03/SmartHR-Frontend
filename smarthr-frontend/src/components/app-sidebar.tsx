@@ -4,7 +4,6 @@ import {
   Command,
   GalleryVerticalEnd,
   SquareTerminal,
-  CitrusIcon,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -98,10 +97,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link to={"/dashboard"}>
-                <CitrusIcon className="!size-5 text-yellow-600" />
-                <span className="text-base font-semibold">
-                  Little Lemon Inc.
-                </span>
+                <span className="text-base font-semibold">SmartHR Inc.</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

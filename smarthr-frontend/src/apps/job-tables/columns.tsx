@@ -46,7 +46,18 @@ export const columns: ColumnDef<job_type>[] = [
         slug: string;
         logo: string;
       };
+
       return <span>{company.name}</span>;
+    },
+    filterFn: (row, id, value) => {
+      // Get the company object and extract the name for filtering
+      const companyObject = row.getValue(id) as {
+        id: number;
+        name: string;
+        slug: string;
+        logo: string;
+      };
+      return value.includes(companyObject.name);
     },
   },
   {
@@ -55,12 +66,20 @@ export const columns: ColumnDef<job_type>[] = [
       <DataTableColumnHeader column={column} title="Department" />
     ),
     cell: ({ row }) => {
-      const company = row.getValue("department") as {
+      const department = row.getValue("department") as {
         id: number;
         title: string;
         slug: string;
       };
-      return <span>{company.title}</span>;
+      return <span>{department.title}</span>;
+    },
+    filterFn: (row, id, value) => {
+      const department = row.getValue(id) as {
+        id: number;
+        title: string;
+        slug: string;
+      };
+      return value.includes(department.title);
     },
   },
   {

@@ -3,6 +3,7 @@ import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/data-table-pagination";
 import { DataTableViewOptions } from "@/components/data-table-visibility";
+import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 
 import {
   Table,
@@ -25,6 +26,10 @@ import {
   type VisibilityState,
   type ColumnFiltersState,
 } from "@tanstack/react-table";
+
+import { useListJobsPrivate } from "@/hooks/useJob";
+import { BriefcaseBusiness, Building2 } from "lucide-react";
+import { status } from "./PredictedData";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -59,6 +64,15 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const jobsData = useListJobsPrivate();
+
+  const jobs_filter = jobsData.data?.map((x) => {
+    return { label: x.title, value: x.title, icon: BriefcaseBusiness };
+  });
+  const companies_filter = jobsData.data?.map((x) => {
+    return { label: x.company.name, value: x.company.name, icon: Building2 };
+  });
+
   return (
     <div>
       <div className="flex flex-1 flex-wrap items-center space-y-2 space-x-2 py-4">
@@ -75,6 +89,27 @@ export function DataTable<TData, TValue>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
+        {table.getColumn("job_title") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("job_title")}
+            title="Position"
+            options={jobs_filter ?? []}
+          />
+        )}
+        {table.getColumn("company_name") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("company_name")}
+            title="Company"
+            options={companies_filter ?? []}
+          />
+        )}
+        {table.getColumn("status") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("status")}
+            title="Status"
+            options={status}
+          />
+        )}
 
         <DataTableViewOptions table={table} />
       </div>

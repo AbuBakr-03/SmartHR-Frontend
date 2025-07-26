@@ -118,6 +118,7 @@ export const columns = (
     // - We're combining multiple nested fields (job.title + company.name)
     // - There's no single field called 'job_position' in our data
     // - We need complete control over how this data is accessed and displayed
+    accessorFn: (row) => row.application.job.title,
 
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Job Position" />
@@ -283,15 +284,10 @@ export const columns = (
         // WHY: We use toLowerCase() to handle different capitalizations
         switch (title.toLowerCase()) {
           case "pass":
-          case "passed":
-          case "hired":
-          case "approved":
             // WHY: Green universally means "good" or "success"
             // WHY: We provide both light and dark mode colors
             return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
           case "fail":
-          case "failed":
-          case "rejected":
             // WHY: Red universally means "bad" or "failure"
             return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400";
           case "pending":
@@ -334,6 +330,14 @@ export const columns = (
             )}
         </div>
       );
+    },
+    filterFn: (row, id, value) => {
+      const resultObject = row.getValue(id) as {
+        id: number;
+        title: string;
+        slug: string;
+      };
+      return value.includes(resultObject.title);
     },
   },
 
@@ -379,7 +383,7 @@ export const columns = (
       // WHY: Green color indicates success/completion
       if (hasAnalysis) {
         return (
-          <div className="flex items-center gap-1 text-green-600">
+          <div className="flex items-center justify-center gap-1 text-green-600">
             <Play className="h-3 w-3" />
             <span className="text-sm">Analyzed</span>
           </div>

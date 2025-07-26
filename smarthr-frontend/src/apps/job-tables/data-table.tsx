@@ -2,7 +2,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { Plus, CalendarIcon } from "lucide-react";
+import { Plus, CalendarIcon, Building2, Building } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { DataTablePagination } from "@/components/data-table-pagination";
 import { DataTableViewOptions } from "@/components/data-table-visibility";
+import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 
 import {
   Table,
@@ -140,6 +141,14 @@ export function DataTable<TData, TValue>({
   const { data: companiesData } = useListCompaniesPrivate();
   const { data: departmentsData } = useListDepartmentsPrivate();
 
+  const companies_filter = companiesData?.map((x) => {
+    return { label: x.name, value: x.name, icon: Building2 };
+  });
+
+  const departments_filter = departmentsData?.map((x) => {
+    return { label: x.title, value: x.title, icon: Building };
+  });
+
   const onSubmit = async (data: FormData) => {
     try {
       console.log("Submitting job:", data);
@@ -200,6 +209,20 @@ export function DataTable<TData, TValue>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
+        {table.getColumn("company") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("company")}
+            title="Company"
+            options={companies_filter ?? []}
+          />
+        )}
+        {table.getColumn("department") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("department")}
+            title="Department"
+            options={departments_filter ?? []}
+          />
+        )}
 
         <DataTableViewOptions table={table} />
 
