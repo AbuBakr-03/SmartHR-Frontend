@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/contexts/AuthProvider";
 import { Link } from "react-router-dom";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const data = {
   user: {
@@ -110,9 +111,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <Link to={"/dashboard"}>
-                <span className="text-base font-semibold">SmartHR Inc.</span>
-              </Link>
+              <div>
+                <SidebarTrigger className="-ml-1" />
+                <Link to={"/dashboard"}>
+                  <span className="text-base font-semibold">SmartHR Inc.</span>
+                </Link>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

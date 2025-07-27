@@ -5,8 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useOnClickOutside } from "usehooks-ts";
 import { Link } from "react-router-dom";
 import styles from "./Navbar.module.css";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
-const Navbar: React.FC = () => {
+type proptype = {
+  sidebar: boolean;
+};
+
+const Navbar: React.FC<proptype> = ({ sidebar }) => {
   const [mobile, setmobile] = useState<boolean>(window.innerWidth < 900);
 
   const [menu, setmenu] = useState<boolean>(false);
@@ -82,13 +87,17 @@ const Navbar: React.FC = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <Menu
-                  size={30}
-                  className={`cursor-pointer rounded border p-1 hover:bg-slate-100`}
-                  onClick={() => {
-                    handlemenu();
-                  }}
-                ></Menu>
+                {sidebar ? (
+                  <SidebarTrigger />
+                ) : (
+                  <Menu
+                    size={30}
+                    className={`cursor-pointer rounded border p-1 hover:bg-slate-100`}
+                    onClick={() => {
+                      handlemenu();
+                    }}
+                  ></Menu>
+                )}
               </motion.div>
             </div>
             <div className="grid justify-end py-3">

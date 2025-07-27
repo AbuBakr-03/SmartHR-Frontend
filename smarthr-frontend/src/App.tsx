@@ -21,10 +21,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index={true} element={<Home />}></Route>
-          <Route path="job" element={<JobBoard />}></Route>
           <Route path="log-in" element={<Login />}></Route>
           <Route path="sign-up" element={<Signup />}></Route>
         </Route>
+        <Route path="job/" element={<JobBoard />}></Route>
+
         <Route element={<PersistLogin />}>
           <Route element={<RequireAuth allowedRole={"admin"} />}>
             <Route path="dashboard/" element={<Dashboard />}>

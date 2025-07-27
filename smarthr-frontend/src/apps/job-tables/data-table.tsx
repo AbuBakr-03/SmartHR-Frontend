@@ -234,245 +234,241 @@ export function DataTable<TData, TValue>({
 
         <DataTableViewOptions table={table} />
 
-        {canPerformActions && (
-          <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
-            <DialogTrigger asChild>
-              <Button size={"sm"} className="h-8 place-self-start lg:flex">
-                <Plus className="h-4 w-4" />
-                New Job
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-h-[95vh] max-w-2xl overflow-y-auto md:max-w-3xl">
-              <DialogHeader>
-                <DialogTitle>Create New Job</DialogTitle>
-                <DialogDescription>Submit a new job posting.</DialogDescription>
-              </DialogHeader>
+        {canPerformActions && (<Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
+          <DialogTrigger asChild>
+            <Button size={"sm"} className="h-8 place-self-start lg:flex">
+              <Plus className="h-4 w-4" />
+              New Job
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-h-[95vh] max-w-2xl overflow-y-auto md:max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>Create New Job</DialogTitle>
+              <DialogDescription>Submit a new job posting.</DialogDescription>
+            </DialogHeader>
 
-              <Form {...form}>
-                <form
-                  className="grid grid-cols-2 gap-4"
-                  onSubmit={form.handleSubmit(onSubmit)}
-                >
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem className="col-span-2">
-                        <FormLabel>Job Title</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="rounded"
-                            placeholder="Software Engineer"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+            <Form {...form}>
+              <form
+                className="grid grid-cols-2 gap-4"
+                onSubmit={form.handleSubmit(onSubmit)}
+              >
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem className="col-span-2">
+                      <FormLabel>Job Title</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="rounded"
+                          placeholder="Software Engineer"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={form.control}
-                    name="location"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Location</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="rounded"
-                            placeholder="Austin, TX"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Location</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="rounded"
+                          placeholder="Austin, TX"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={form.control}
-                    name="end_date"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Application Deadline</FormLabel>
-                        <Popover modal={false}>
-                          <PopoverTrigger asChild>
-                            <FormControl className="rounded">
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground",
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            className="w-auto p-0"
-                            align="start"
-                            side="bottom"
-                            sideOffset={8}
-                            avoidCollisions={true}
-                            onOpenAutoFocus={(e) => e.preventDefault()}
-                            onCloseAutoFocus={(e) => e.preventDefault()}
-                          >
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={(date) => {
-                                if (date) {
-                                  // Fix timezone offset by setting to noon UTC
-                                  const fixedDate = new Date(
-                                    date.getTime() -
-                                      date.getTimezoneOffset() * 60000,
-                                  );
-                                  field.onChange(fixedDate);
-                                }
-                              }}
-                              disabled={(date) => date < new Date()}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="company_id"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Company</FormLabel>
-                        <Select
-                          onValueChange={(value) =>
-                            field.onChange(Number(value))
-                          }
-                          value={field.value?.toString() || ""}
-                        >
-                          <FormControl className="w-full rounded">
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a company" />
-                            </SelectTrigger>
+                <FormField
+                  control={form.control}
+                  name="end_date"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Application Deadline</FormLabel>
+                      <Popover modal={false}>
+                        <PopoverTrigger asChild>
+                          <FormControl className="rounded">
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground",
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
                           </FormControl>
-                          <SelectContent>{companyOptions}</SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="department_id"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Department</FormLabel>
-                        <Select
-                          onValueChange={(value) =>
-                            field.onChange(Number(value))
-                          }
-                          value={field.value?.toString() || ""}
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-auto p-0"
+                          align="start"
+                          side="bottom"
+                          sideOffset={8}
+                          avoidCollisions={true}
+                          onOpenAutoFocus={(e) => e.preventDefault()}
+                          onCloseAutoFocus={(e) => e.preventDefault()}
                         >
-                          <FormControl className="w-full rounded">
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a department" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>{departmentOptions}</SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="qualification"
-                    render={({ field }) => (
-                      <FormItem className="col-span-2">
-                        <FormLabel>Qualifications</FormLabel>
-                        <FormControl className="rounded">
-                          <Textarea
-                            placeholder="Required qualifications and skills..."
-                            className="resize-none"
-                            rows={6}
-                            {...field}
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={(date) => {
+                              if (date) {
+                                // Fix timezone offset by setting to noon UTC
+                                const fixedDate = new Date(
+                                  date.getTime() -
+                                    date.getTimezoneOffset() * 60000,
+                                );
+                                field.onChange(fixedDate);
+                              }
+                            }}
+                            disabled={(date) => date < new Date()}
+                            initialFocus
                           />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="company_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company</FormLabel>
+                      <Select
+                        onValueChange={(value) => field.onChange(Number(value))}
+                        value={field.value?.toString() || ""}
+                      >
+                        <FormControl className="w-full rounded">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a company" />
+                          </SelectTrigger>
                         </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                        <SelectContent>{companyOptions}</SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={form.control}
-                    name="responsiblities"
-                    render={({ field }) => (
-                      <FormItem className="col-span-2">
-                        <FormLabel>Responsibilities</FormLabel>
-                        <FormControl className="rounded">
-                          <Textarea
-                            placeholder="Key responsibilities and duties..."
-                            className="resize-none"
-                            rows={6}
-                            {...field}
-                          />
+                <FormField
+                  control={form.control}
+                  name="department_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Department</FormLabel>
+                      <Select
+                        onValueChange={(value) => field.onChange(Number(value))}
+                        value={field.value?.toString() || ""}
+                      >
+                        <FormControl className="w-full rounded">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a department" />
+                          </SelectTrigger>
                         </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                        <SelectContent>{departmentOptions}</SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={form.control}
-                    name="nice_to_haves"
-                    render={({ field }) => (
-                      <FormItem className="col-span-2">
-                        <FormLabel>Nice to Haves</FormLabel>
-                        <FormControl className="rounded">
-                          <Textarea
-                            placeholder="Preferred qualifications or bonus skills..."
-                            className="resize-none"
-                            rows={6}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <FormField
+                  control={form.control}
+                  name="qualification"
+                  render={({ field }) => (
+                    <FormItem className="col-span-2">
+                      <FormLabel>Qualifications</FormLabel>
+                      <FormControl className="rounded">
+                        <Textarea
+                          placeholder="Required qualifications and skills..."
+                          className="resize-none"
+                          rows={6}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <DialogClose asChild>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="col-span-1"
-                    >
-                      Cancel
-                    </Button>
-                  </DialogClose>
+                <FormField
+                  control={form.control}
+                  name="responsiblities"
+                  render={({ field }) => (
+                    <FormItem className="col-span-2">
+                      <FormLabel>Responsibilities</FormLabel>
+                      <FormControl className="rounded">
+                        <Textarea
+                          placeholder="Key responsibilities and duties..."
+                          className="resize-none"
+                          rows={6}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
+                <FormField
+                  control={form.control}
+                  name="nice_to_haves"
+                  render={({ field }) => (
+                    <FormItem className="col-span-2">
+                      <FormLabel>Nice to Haves</FormLabel>
+                      <FormControl className="rounded">
+                        <Textarea
+                          placeholder="Preferred qualifications or bonus skills..."
+                          className="resize-none"
+                          rows={6}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <DialogClose asChild>
                   <Button
+                    type="button"
+                    variant="outline"
                     className="col-span-1"
-                    type="submit"
-                    disabled={createJob.isPending}
                   >
-                    {createJob.isPending ? "Creating..." : "Create Job"}
+                    Cancel
                   </Button>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
-        )}
+                </DialogClose>
+
+                <Button
+                  className="col-span-1"
+                  type="submit"
+                  disabled={createJob.isPending}
+                >
+                  {createJob.isPending ? "Creating..." : "Create Job"}
+                </Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>)}
+
+        
       </div>
 
       <div className="rounded-md border">
