@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { useFilter } from "@/contexts/FilterProvider";
 import { useSearch } from "@/contexts/SearchProvider";
 import { useListJobs } from "@/hooks/useJob";
 import { Building, CalendarClock, MapPin } from "lucide-react";
@@ -21,8 +22,12 @@ const JobBoard = () => {
   const jobs = useListJobs();
   const querydata = useSearch();
   const filteredjobs = useMemo(() => {
+    if (!jobs.data) return [];
+    if (!querydata.query.trim()) return jobs.data; // Early return for empty search
+
+    const searchTerm = querydata.query.toLowerCase().trim();
     return jobs.data?.filter((x) => {
-      return x.title.toLowerCase().includes(querydata.query.toLowerCase());
+      return x.title.toLowerCase().includes(searchTerm);
     });
   }, [querydata.query, jobs.data]);
   const jobList = filteredjobs?.map((job) => {
@@ -64,10 +69,17 @@ const JobBoard = () => {
       </div>
     );
   });
+  const filterData = useFilter();
+  const { setCompany, company, department, setDepartment } = filterData;
   return (
     <>
       <SidebarProvider>
-        <JobSidebar />
+        <JobSidebar
+          onChange={() => {
+            setCompany(company);
+            setDepartment(department);
+          }}
+        />
 
         <SidebarInset>
           <div className="md:hidden">

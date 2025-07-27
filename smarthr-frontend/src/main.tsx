@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import AuthProvider from "./contexts/AuthProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SearchProvider from "./contexts/SearchProvider.tsx";
+import FilterProvider from "./contexts/FilterProvider.tsx";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
@@ -12,7 +13,9 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <SearchProvider>
-          <App />
+          <FilterProvider>
+            <App />
+          </FilterProvider>
         </SearchProvider>
       </AuthProvider>
     </QueryClientProvider>

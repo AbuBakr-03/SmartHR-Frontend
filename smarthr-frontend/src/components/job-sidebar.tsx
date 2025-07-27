@@ -45,7 +45,16 @@ import {
 } from "lucide-react";
 import { useSearch } from "@/contexts/SearchProvider";
 
-export function JobSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type JobsFilters = {
+  company: string;
+  department: string;
+};
+
+type jobSidebarType = React.ComponentProps<typeof Sidebar> & {
+  onChange: (company: string, department: string) => void;
+};
+
+export function JobSidebar({ onChange, ...props }: jobSidebarType) {
   const { state } = useSidebar();
 
   const querydata = useSearch();
@@ -103,6 +112,13 @@ export function JobSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     );
   });
 
+  const [company, setCompany] = React.useState<string>("");
+  const [department, setDepartment] = React.useState<string>("");
+  React.useEffect(() => {
+    onChange(company, department);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [company, department]);
+
   return (
     <>
       <Sidebar collapsible="icon" {...props}>
@@ -157,10 +173,12 @@ export function JobSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <FormItem className="mx-auto mt-3 w-10/12">
                         <FormLabel>Company</FormLabel>
                         <Select
-                          onValueChange={(value) =>
-                            field.onChange(Number(value))
-                          }
-                          value={field.value?.toString() || ""}
+                          onValueChange={(value) => {
+                            field.onChange();
+                            setCompany(value);
+                            // setCompany(value as string);
+                          }}
+                          value={field.value.name || ""}
                         >
                           <FormControl className="w-full rounded">
                             <SelectTrigger>
@@ -180,10 +198,11 @@ export function JobSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <FormItem className="mx-auto mt-6 w-10/12">
                         <FormLabel>Department</FormLabel>
                         <Select
-                          onValueChange={(value) =>
-                            field.onChange(Number(value))
-                          }
-                          value={field.value?.toString() || ""}
+                          onValueChange={(value) => {
+                            field.onChange();
+                            setDepartment(value);
+                          }}
+                          value={field.value.title || ""}
                         >
                           <FormControl className="w-full rounded">
                             <SelectTrigger>

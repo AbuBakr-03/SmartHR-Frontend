@@ -14,6 +14,7 @@ const defaultContext: contextType = {
   setQuery: () => {},
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const SearchContext = createContext<contextType>(defaultContext);
 const SearchProvider = ({ children }: proptype) => {
   const [query, setQuery] = useState<string>("");
@@ -25,6 +26,7 @@ const SearchProvider = ({ children }: proptype) => {
 };
 export default SearchProvider;
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSearch = () => {
   return useContext(SearchContext);
 };
