@@ -215,13 +215,6 @@ export function JobSidebar({ onChange, ...props }: jobSidebarType) {
                       </FormItem>
                     )}
                   />
-
-                  <button className="mx-auto mt-4.5 grid w-10/12 justify-self-center rounded border bg-slate-900 py-1 font-medium text-white">
-                    Filter
-                  </button>
-                  <button className="text-slate800 mx-auto mt-3 grid w-10/12 justify-self-center rounded border bg-white py-1 font-medium">
-                    Clear
-                  </button>
                 </form>
               </Form>
             </SidebarContent>
