@@ -1,22 +1,20 @@
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 type proptype = {
   children: React.ReactNode;
 };
 
-type searchContextType = {
+type contextType = {
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const defaultSearchContext: searchContextType = {
+const defaultContext: contextType = {
   query: "",
   setQuery: () => {},
 };
 
-export const SearchContext =
-  createContext<searchContextType>(defaultSearchContext);
-
+export const SearchContext = createContext<contextType>(defaultContext);
 const SearchProvider = ({ children }: proptype) => {
   const [query, setQuery] = useState<string>("");
   return (

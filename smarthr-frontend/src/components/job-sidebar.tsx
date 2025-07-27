@@ -47,7 +47,8 @@ import { useSearch } from "@/contexts/SearchProvider";
 
 export function JobSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
-  const data = useSearch();
+
+  const querydata = useSearch();
 
   const FormSchema = z.object({
     job_title: z.string(),
@@ -140,8 +141,8 @@ export function JobSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             className="rounded"
                             {...field}
                             onChange={(e) => {
-                              field.onChange(e); // Update the form state
-                              data?.setQuery(e.target.value); // Update search context
+                              querydata.setQuery(e.target.value);
+                              field.onChange(e.target.value);
                             }}
                           />
                         </FormControl>

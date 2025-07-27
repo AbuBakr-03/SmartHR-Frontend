@@ -15,14 +15,17 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useSearch } from "@/contexts/SearchProvider";
 import { useListJobs } from "@/hooks/useJob";
 import { Building, CalendarClock, MapPin } from "lucide-react";
+import { useMemo } from "react";
 
 const JobBoard = () => {
   const jobs = useListJobs();
   const querydata = useSearch();
-  const filteredJobs = jobs.data?.filter((x) => {
-    return x.title.toLowerCase().includes(querydata.query.toLowerCase());
-  });
-  const jobList = filteredJobs?.map((job) => {
+  const filteredjobs = useMemo(() => {
+    return jobs.data?.filter((x) => {
+      return x.title.toLowerCase().includes(querydata.query.toLowerCase());
+    });
+  }, [querydata.query, jobs.data]);
+  const jobList = filteredjobs?.map((job) => {
     return (
       <div className="grid w-full items-center gap-3 rounded-2xl border-2 px-6 py-6">
         <div className="flex items-center space-x-4">
