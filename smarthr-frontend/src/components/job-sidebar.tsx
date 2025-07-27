@@ -187,8 +187,11 @@ export function JobSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     )}
                   />
 
-                  <button className="mx-auto mt-4.5 grid w-10/12 justify-self-center rounded border bg-black py-1 font-medium text-white">
+                  <button className="mx-auto mt-4.5 grid w-10/12 justify-self-center rounded border bg-slate-900 py-1 font-medium text-white">
                     Filter
+                  </button>
+                  <button className="text-slate800 mx-auto mt-3 grid w-10/12 justify-self-center rounded border bg-white py-1 font-medium">
+                    Clear
                   </button>
                 </form>
               </Form>

@@ -90,16 +90,15 @@ const JobBoard = () => {
               <div>
                 <Select>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select a fruit" />
+                    <SelectValue placeholder="Sort By" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Fruits</SelectLabel>
-                      <SelectItem value="apple">Apple</SelectItem>
-                      <SelectItem value="banana">Banana</SelectItem>
-                      <SelectItem value="blueberry">Blueberry</SelectItem>
-                      <SelectItem value="grapes">Grapes</SelectItem>
-                      <SelectItem value="pineapple">Pineapple</SelectItem>
+                      <SelectItem value="apple">A-Z</SelectItem>
+                      <SelectItem value="banana">Z-A</SelectItem>
+                      <SelectItem value="blueberry">End Date</SelectItem>
+                      <SelectItem value="grapes">End Date</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
