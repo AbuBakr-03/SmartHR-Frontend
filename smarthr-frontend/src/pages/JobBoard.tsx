@@ -12,12 +12,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { useSearch } from "@/contexts/SearchProvider";
 import { useListJobs } from "@/hooks/useJob";
 import { Building, CalendarClock, MapPin } from "lucide-react";
 
 const JobBoard = () => {
   const jobs = useListJobs();
-  const jobList = jobs.data?.map((job) => {
+  const querydata = useSearch();
+  const filteredJobs = jobs.data?.filter((x) => {
+    return x.title.toLowerCase().includes(querydata.query.toLowerCase());
+  });
+  const jobList = filteredJobs?.map((job) => {
     return (
       <div className="grid w-full items-center gap-3 rounded-2xl border-2 px-6 py-6">
         <div className="flex items-center space-x-4">

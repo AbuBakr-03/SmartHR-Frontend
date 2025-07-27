@@ -43,9 +43,11 @@ import {
   LogIn,
   Plus,
 } from "lucide-react";
+import { useSearch } from "@/contexts/SearchProvider";
 
 export function JobSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
+  const data = useSearch();
 
   const FormSchema = z.object({
     job_title: z.string(),
@@ -134,7 +136,14 @@ export function JobSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <FormItem className="mx-auto mt-6 w-10/12">
                         <FormLabel>Job Title</FormLabel>
                         <FormControl>
-                          <Input className="rounded" {...field} />
+                          <Input
+                            className="rounded"
+                            {...field}
+                            onChange={(e) => {
+                              field.onChange(e); // Update the form state
+                              data?.setQuery(e.target.value); // Update search context
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
