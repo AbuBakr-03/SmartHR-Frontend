@@ -1,12 +1,13 @@
 // littlelemon/src/hooks/useLogout.tsx
-import axios from "axios";
 import { useAuth } from "../contexts/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import useAxiosPrivate from "./useAxiosPrivate";
 
 const useLogout = () => {
   const authContext = useAuth();
   const { setAuth } = authContext;
   const navigate = useNavigate();
+  const axiosPrivate = useAxiosPrivate(); // Use authenticated axios instance
 
   const logout = async () => {
     // Clear auth state immediately
@@ -20,7 +21,7 @@ const useLogout = () => {
 
     try {
       // Call backend to clear HttpOnly cookie
-      await axios.post(
+      await axiosPrivate.post(
         "http://127.0.0.1:8000/auth/logout/",
         {},
         {

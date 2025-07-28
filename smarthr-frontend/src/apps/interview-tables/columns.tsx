@@ -218,7 +218,7 @@ export const columns = (
       return (
         // WHAT: Container for two buttons side by side
         // WHY: flex items-center aligns buttons vertically, gap-2 adds space between them
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-2">
           {/* WHAT: Button to open the meeting in a new tab */}
           <Button
             variant="outline" // WHY: Outline variant is less prominent than solid buttons

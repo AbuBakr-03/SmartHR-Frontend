@@ -40,20 +40,20 @@ const Home = () => {
                   predictive hiring insights.
                 </p>
               </div>
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <Link className="cursor-pointer" to={"job"}>
+              <div className="flex flex-row gap-4 max-lg:grid max-md:w-full">
+                <Link className="cursor-pointer max-md:w-full" to={"job"}>
                   <Button
                     size="lg"
-                    className="bg-slate-900 px-8 py-6 text-lg text-white hover:bg-black"
+                    className="bg-slate-900 px-8 py-6 text-lg text-white hover:bg-black max-md:w-full"
                   >
                     Find a Job
                   </Button>
                 </Link>
-                <Link className="cursor-pointer" to={"dashboard"}>
+                <Link className="cursor-pointer max-md:w-full" to={"dashboard"}>
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-slate-300 bg-transparent px-8 py-6 text-lg text-slate-700 hover:bg-slate-50"
+                    className="border-slate-300 bg-transparent px-8 py-6 text-lg text-slate-700 hover:bg-slate-50 max-md:w-full"
                   >
                     Post a Job
                   </Button>
@@ -205,7 +205,7 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-8 lg:grid-cols-3">
             <Card className="border-slate-200 p-8 text-center transition-shadow hover:shadow-lg">
               <CardContent className="space-y-4">
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 p-4">

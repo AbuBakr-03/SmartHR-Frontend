@@ -17,6 +17,7 @@ import PersistLogin from "./components/PersistLogin";
 import AboutJob from "./pages/aboutjob/Aboutjob";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import InterviewQuestions from "./components/interview_questions";
 
 const allowed = ["user", "admin", "Recruiter"];
 function App() {
@@ -28,7 +29,10 @@ function App() {
           <Route path="log-in" element={<Login />}></Route>
           <Route path="sign-up" element={<Signup />}></Route>
           <Route path="forgot-password" element={<ForgotPassword />}></Route>
-          <Route path="reset-password" element={<ResetPassword />}></Route>
+          <Route
+            path="reset-password/:uid/:token"
+            element={<ResetPassword />}
+          ></Route>
         </Route>
         <Route path="job/" element={<JobBoard />}></Route>
 
@@ -42,13 +46,17 @@ function App() {
               <Route path="companies" element={<CompanyTable />}></Route>
               <Route path="departments" element={<DepartmentTable />}></Route>
               <Route path="interviews" element={<InterviewTable />}></Route>
+              <Route
+                path="interviews/:id/questions/"
+                element={<InterviewQuestions />}
+              ></Route>
               <Route path="jobs" element={<JobTable />}></Route>
               <Route index={true} element={<PredictedTable />}></Route>
             </Route>
           </Route>
         </Route>
       </Routes>
-      <Toaster />
+      <Toaster theme="dark" />
     </>
   );
 }

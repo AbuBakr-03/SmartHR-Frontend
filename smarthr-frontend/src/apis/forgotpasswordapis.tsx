@@ -11,6 +11,6 @@ const forgot_schema = z.object({
 type forgot_type = z.infer<typeof forgot_schema>;
 
 export const forgotpassword = async (email: forgot_type) => {
-  const { data } = await axios.post(API_URL, { email });
+  const { data } = await axios.post(API_URL, email);
   return data;
 };

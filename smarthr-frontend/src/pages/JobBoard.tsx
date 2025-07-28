@@ -114,18 +114,18 @@ const JobBoard = () => {
             alt={job.company.name}
           />
           <div className="grid">
-            <h3 className="text-xl font-bold">{job.title}</h3>
+            <h3 className="text-xl font-bold text-slate-900">{job.title}</h3>
             <p className="text-slate-600">{job.company.name}</p>
           </div>
         </div>
-        <div className="flex space-x-3">
-          <Badge className="h-8">
+        <div className="flex space-x-3 max-sm:flex-col max-sm:space-y-2">
+          <Badge className="h-8 bg-slate-900">
             <Building /> {job.department.title}
           </Badge>
-          <Badge className="h-8">
+          <Badge className="h-8 bg-slate-900">
             <MapPin /> {job.location}
           </Badge>
-          <Badge className="h-8">
+          <Badge className="h-8 bg-slate-900">
             <CalendarClock />
             Last Date:{" "}
             {job.end_date
@@ -160,7 +160,7 @@ const JobBoard = () => {
             </div>
           </div>
           <div className="grid place-items-center bg-white">
-            <div className="grid w-10/12 grid-cols-1 items-center gap-4 py-15 md:grid-cols-3">
+            <div className="grid w-10/12 grid-cols-2 items-center gap-4 py-15">
               <div className="grid w-full gap-2">
                 <h2 className="text-2xl font-bold text-slate-800">
                   {totalItems} Jobs Found
@@ -169,25 +169,6 @@ const JobBoard = () => {
                   Showing {startIndex + 1}-{Math.min(endIndex, totalItems)} of{" "}
                   {totalItems} jobs
                 </p>
-              </div>
-
-              <div className="flex justify-center">
-                <Select
-                  value={itemsPerPage.toString()}
-                  onValueChange={(value) => setItemsPerPage(Number(value))}
-                >
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Per Page</SelectLabel>
-                      <SelectItem value="5">5 jobs</SelectItem>
-                      <SelectItem value="10">10 jobs</SelectItem>
-                      <SelectItem value="20">20 jobs</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
               </div>
 
               <div className="flex justify-end">

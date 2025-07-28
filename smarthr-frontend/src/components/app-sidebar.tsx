@@ -54,7 +54,7 @@ const data = {
       items: [
         {
           title: "Home",
-          url: "/dashboard",
+          url: "/",
         },
         {
           title: "Companies",
@@ -125,8 +125,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={new_navmain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={auth.user} />
-        <p>{auth.role}</p>
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

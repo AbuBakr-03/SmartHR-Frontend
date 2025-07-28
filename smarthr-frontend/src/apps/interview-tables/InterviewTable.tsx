@@ -169,7 +169,7 @@ const InterviewTable = () => {
     // WHAT: Navigate to the questions detail page
     // WHY: Questions list is too detailed to show in table - needs dedicated page
     // HOW: Template literal creates URL like "/interviews/123/questions"
-    navigate(`/interviews/${interviewId}/questions`);
+    navigate(`/dashboard/interviews/${interviewId}/questions`);
 
     // NOTE: No loading state needed here because navigation is instant
     // NOTE: No API call needed because we're just changing pages
@@ -200,7 +200,10 @@ const InterviewTable = () => {
   // Filter columns based on permissions
   const tableColumns2 = canPerformActions
     ? tableColumns
-    : tableColumns.filter((col) => col.id !== "actions");
+    : tableColumns
+        .filter((col) => col.id !== "actions")
+        .filter((col) => col.id !== "analyze_recording")
+        .filter((col) => col.id !== "questions");
 
   // ============================================================================
   // RENDER - Display the complete table interface

@@ -5,14 +5,14 @@ const API_URL = "http://127.0.0.1:8000/auth/users/reset_password_confirm/";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const reset_schema = z.object({
-  password: z
+  new_password: z
     .string()
     .regex(
       /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/,
       "Must include uppercase, lowercase, number & symbol",
     ),
-  uid: z.string().optional(),
-  token: z.string().optional(),
+  uid: z.string(),
+  token: z.string(),
 });
 
 type reset_type = z.infer<typeof reset_schema>;

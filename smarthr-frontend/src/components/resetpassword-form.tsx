@@ -22,7 +22,6 @@ import {
 } from "../components/ui/form";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { toast } from "sonner";
 import { useResetPassword } from "@/hooks/useResetPassword";
 
 export function ResetPasswordForm({
@@ -30,14 +29,12 @@ export function ResetPasswordForm({
   ...props
 }: React.ComponentProps<"div">) {
   const schema = z.object({
-    password: z
+    new_password: z
       .string()
       .regex(
         /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/,
         "Must include uppercase, lowercase, number & symbol",
       ),
-    uid: z.string().optional(),
-    token: z.string().optional(),
   });
   type form_schema = z.infer<typeof schema>;
   const navigate = useNavigate();
@@ -46,10 +43,12 @@ export function ResetPasswordForm({
   const form = useForm<form_schema>({ resolver: zodResolver(schema) });
   const onSubmit = (data: form_schema) => {
     console.log(data);
+    if (!uid || !token) {
+      return;
+    }
     const formdata = { ...data, uid: uid, token: token };
     resetPassword.mutate(formdata, {
       onSuccess: () => {
-        toast.success(`Check your email for reset password instruction`);
         navigate("/log-in");
       },
     });
@@ -66,12 +65,16 @@ export function ResetPasswordForm({
             <form className="grid gap-3" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
-                name="password"
+                name="new_password"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input className="rounded" {...field}></Input>
+                      <Input
+                        type="password"
+                        className="rounded"
+                        {...field}
+                      ></Input>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

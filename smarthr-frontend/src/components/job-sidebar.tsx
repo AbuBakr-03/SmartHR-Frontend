@@ -119,9 +119,9 @@ export function JobSidebar({ ...props }: jobSidebarType) {
                 className="data-[slot=sidebar-menu-button]:!p-1.5"
               >
                 <div>
-                  <SidebarTrigger className="-ml-1" />
-                  <Link to={"/dashboard"}>
-                    <span className="text-base font-semibold">SmartHR</span>
+                  <SidebarTrigger className="-ml-1 text-slate-900" />
+                  <Link to={"/"}>
+                    <span className="text-base text-slate-900 font-semibold">SmartHR</span>
                   </Link>
                 </div>
               </SidebarMenuButton>
@@ -134,7 +134,7 @@ export function JobSidebar({ ...props }: jobSidebarType) {
           <>
             <SidebarContent className="overflow-x-hidden">
               <Form {...form}>
-                <form>
+                <form className="text-slate-900">
                   <FormField
                     control={form.control}
                     name="job_title"
@@ -227,7 +227,7 @@ export function JobSidebar({ ...props }: jobSidebarType) {
                 </form>
               </Form>
             </SidebarContent>
-            <SidebarFooter className="mx-auto mb-4 w-11/12">
+            <SidebarFooter className="mx-auto text-slate-900 mb-4 w-11/12">
               <SidebarMenu>
                 {linkslist}
                 <SidebarMenuItem>
