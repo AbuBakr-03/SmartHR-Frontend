@@ -128,9 +128,15 @@ export function LoginForm({
                 control={form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="grid grid-cols-2">
                     <FormLabel>Password</FormLabel>
-                    <FormControl>
+                    <Link
+                      className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                      to={"/forgot-password"}
+                    >
+                      Forgot Your Password?
+                    </Link>
+                    <FormControl className="col-span-2">
                       <Input
                         className="rounded"
                         type="password"

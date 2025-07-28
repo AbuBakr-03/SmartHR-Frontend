@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { useLocation, Outlet, Navigate } from "react-router-dom";
 
 type roleType = {
-  allowedRole: string;
+  allowedRole: string[];
 };
 
 const RequireAuth = ({ allowedRole }: roleType) => {
@@ -12,8 +12,10 @@ const RequireAuth = ({ allowedRole }: roleType) => {
   const location = useLocation();
 
   // Check if user has the required role
-  if (auth?.role === allowedRole) {
-    return <Outlet />;
+  for (let index = 0; index < allowedRole.length; index++) {
+    if (auth?.role === allowedRole[index]) {
+      return <Outlet />;
+    }
   }
 
   // If user exists but wrong role, redirect to unauthorized

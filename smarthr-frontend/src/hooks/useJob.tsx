@@ -9,7 +9,6 @@ import {
   type job_type,
   type job_post_type,
 } from "@/apis/jobapis";
-import { useFilter } from "@/contexts/FilterProvider";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -18,11 +17,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 // ========================================
 
 export const useListJobs = () => {
-  const filterdata = useFilter();
-  const { company, department } = filterdata;
   return useQuery<job_type[], Error>({
     queryKey: ["jobs"],
-    queryFn: () => listJobs({ company, department }),
+    queryFn: listJobs,
     retry: 1,
   });
 };

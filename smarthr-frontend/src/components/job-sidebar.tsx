@@ -32,9 +32,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useListCompanies } from "@/hooks/useCompany";
-import { company_schema } from "@/apis/companyapis";
 import { useListDepartments } from "@/hooks/useDepartment";
-import { department_schema } from "@/apis/departmentapis";
 import { Input } from "./ui/input";
 import {
   BriefcaseBusiness,
@@ -44,25 +42,23 @@ import {
   Plus,
 } from "lucide-react";
 import { useSearch } from "@/contexts/SearchProvider";
+import { useFilter } from "@/contexts/FilterProvider";
 
-type JobsFilters = {
-  company: string;
-  department: string;
-};
+type jobSidebarType = React.ComponentProps<typeof Sidebar>;
 
-type jobSidebarType = React.ComponentProps<typeof Sidebar> & {
-  onChange: (company: string, department: string) => void;
-};
-
-export function JobSidebar({ onChange, ...props }: jobSidebarType) {
+export function JobSidebar({ ...props }: jobSidebarType) {
   const { state } = useSidebar();
 
   const querydata = useSearch();
+  const { setQuery } = querydata;
+
+  const filterData = useFilter();
+  const { company, department, setCompany, setDepartment } = filterData;
 
   const FormSchema = z.object({
-    job_title: z.string(),
-    company: company_schema,
-    department: department_schema,
+    job_title: z.string().optional(),
+    company: z.string().optional(),
+    department: z.string().optional(),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -112,13 +108,6 @@ export function JobSidebar({ onChange, ...props }: jobSidebarType) {
     );
   });
 
-  const [company, setCompany] = React.useState<string>("");
-  const [department, setDepartment] = React.useState<string>("");
-  React.useEffect(() => {
-    onChange(company, department);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [company, department]);
-
   return (
     <>
       <Sidebar collapsible="icon" {...props}>
@@ -157,7 +146,7 @@ export function JobSidebar({ onChange, ...props }: jobSidebarType) {
                             className="rounded"
                             {...field}
                             onChange={(e) => {
-                              querydata.setQuery(e.target.value);
+                              setQuery(e.target.value);
                               field.onChange(e.target.value);
                             }}
                           />
@@ -174,18 +163,28 @@ export function JobSidebar({ onChange, ...props }: jobSidebarType) {
                         <FormLabel>Company</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            field.onChange();
-                            setCompany(value);
+                            if (value == "all-companies") {
+                              field.onChange("");
+                              setCompany("");
+                            } else {
+                              field.onChange(value);
+                              setCompany(value);
+                            }
                             // setCompany(value as string);
                           }}
-                          value={field.value.name || ""}
+                          value={company}
                         >
                           <FormControl className="w-full rounded">
                             <SelectTrigger>
                               <SelectValue placeholder="Select a company" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>{companiesList}</SelectContent>
+                          <SelectContent>
+                            <SelectItem value="all-companies">
+                              All Companies
+                            </SelectItem>
+                            {companiesList}
+                          </SelectContent>
                         </Select>
                         <FormMessage />
                       </FormItem>
@@ -199,17 +198,27 @@ export function JobSidebar({ onChange, ...props }: jobSidebarType) {
                         <FormLabel>Department</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            field.onChange();
-                            setDepartment(value);
+                            if (value == "all-departments") {
+                              field.onChange("");
+                              setCompany("");
+                            } else {
+                              field.onChange(value);
+                              setDepartment(value);
+                            }
                           }}
-                          value={field.value.title || ""}
+                          value={department}
                         >
                           <FormControl className="w-full rounded">
                             <SelectTrigger>
                               <SelectValue placeholder="Select a department" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>{departmentsList}</SelectContent>
+                          <SelectContent>
+                            <SelectItem value="all-departments">
+                              All Departments
+                            </SelectItem>
+                            {departmentsList}
+                          </SelectContent>
                         </Select>
                         <FormMessage />
                       </FormItem>

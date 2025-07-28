@@ -21,7 +21,15 @@ import {
   FormMessage,
 } from "../components/ui/form";
 import { useCreateAccount } from "@/hooks/useSignup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectItem,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { toast } from "sonner";
 
 export function SignupForm({
   className,
@@ -32,7 +40,8 @@ export function SignupForm({
       .string()
       .min(2, { message: "Full name must be at least 2 characters long." })
       .max(50, { message: "Full name must be 50 characters or fewer." }),
-    email: z.string().email(),
+    email: z.email(),
+    role: z.enum(["user", "Recruiter"]),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters long")
@@ -42,11 +51,20 @@ export function SignupForm({
       ),
   });
   type form_schema = z.infer<typeof schema>;
+  const navigate = useNavigate();
   const createAccount = useCreateAccount();
   const form = useForm<form_schema>({ resolver: zodResolver(schema) });
   const onSubmit = (data: form_schema) => {
     console.log(data);
-    createAccount.mutate(data);
+    createAccount.mutate(data, {
+      onSuccess: () => {
+        toast.success(`Your account was created successfully`);
+        navigate("/log-in");
+      },
+      onError: () => {
+        toast.error("Error creating account");
+      },
+    });
   };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -107,7 +125,31 @@ export function SignupForm({
                   </FormItem>
                 )}
               ></FormField>
-              <div className="flex flex-col gap-6">
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <Select
+                      onValueChange={(value) => field.onChange(value)}
+                      value={field.value?.toString() || ""}
+                    >
+                      <FormControl className="w-full rounded">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="user">User</SelectItem>
+                        <SelectItem value="Recruiter">Recruiter</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="mt-4 flex flex-col gap-6">
                 <div className="flex flex-col">
                   <Button type="submit" className="w-full">
                     Signup

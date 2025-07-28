@@ -28,12 +28,13 @@ const application_array_schema = z.array(application_schema);
 export type application_type = z.infer<typeof application_schema>;
 
 // Corrected post type - removed status_id (backend sets default)
+// Update the application_post_type to handle File uploads
 export type application_post_type = Omit<
   application_type,
-  "id" | "job" | "status" | "match_score"
+  "id" | "job" | "status" | "match_score" | "resume"
 > & {
   job_id: number;
-  resume: File; // For file upload
+  resume: File; // Change this to File for uploads
 };
 
 // Private functions (require auth) - Fixed endpoint consistency
@@ -68,12 +69,10 @@ export const createApplicationPrivate = async (
     formData.append("cover_letter", applicationData.cover_letter);
     formData.append("job_id", applicationData.job_id.toString());
 
-    // Only append resume if it exists
+    // Append the file
     if (applicationData.resume) {
       formData.append("resume", applicationData.resume);
     }
-
-    // Removed status_id and match_score - backend handles these
 
     const { data } = await axiosPrivate.post("application/", formData, {
       headers: {
@@ -86,16 +85,10 @@ export const createApplicationPrivate = async (
       return result.data;
     } else {
       console.error("Validation error:", result.error);
-      console.error("Response data:", data);
       throw new Error("Failed to validate response data");
     }
   } catch (error) {
     console.error("Create application error:", error);
-    if (error && typeof error === "object" && "response" in error) {
-      const axiosError = error as any;
-      console.error("Error response data:", axiosError.response?.data);
-      console.error("Error response status:", axiosError.response?.status);
-    }
     throw error;
   }
 };

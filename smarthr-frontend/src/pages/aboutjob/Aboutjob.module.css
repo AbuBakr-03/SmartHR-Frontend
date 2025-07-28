@@ -1,0 +1,20 @@
+.layout {
+  display: grid;
+  grid-template-areas: "description form";
+  grid-template-columns: 2fr 1fr;
+}
+
+.description {
+  grid-area: description;
+}
+
+.form {
+  grid-area: form;
+}
+
+@media screen and (max-width: 900px) {
+  .layout {
+    grid-template-areas: "description" "form";
+    grid-template-columns: 1fr;
+  }
+}

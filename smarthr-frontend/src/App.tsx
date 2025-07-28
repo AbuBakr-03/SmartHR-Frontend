@@ -14,7 +14,11 @@ import PredictedTable from "./apps/predicted-tables/PredictedTable";
 import { Toaster } from "sonner";
 import RequireAuth from "./components/RequireAuth";
 import PersistLogin from "./components/PersistLogin";
+import AboutJob from "./pages/aboutjob/Aboutjob";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
+const allowed = ["user", "admin", "Recruiter"];
 function App() {
   return (
     <>
@@ -23,31 +27,16 @@ function App() {
           <Route index={true} element={<Home />}></Route>
           <Route path="log-in" element={<Login />}></Route>
           <Route path="sign-up" element={<Signup />}></Route>
+          <Route path="forgot-password" element={<ForgotPassword />}></Route>
+          <Route path="reset-password" element={<ResetPassword />}></Route>
         </Route>
         <Route path="job/" element={<JobBoard />}></Route>
 
         <Route element={<PersistLogin />}>
-          <Route element={<RequireAuth allowedRole={"admin"} />}>
-            <Route path="dashboard/" element={<Dashboard />}>
-              <Route path="applications" element={<ApplicationTable />}></Route>
-              <Route path="companies" element={<CompanyTable />}></Route>
-              <Route path="departments" element={<DepartmentTable />}></Route>
-              <Route path="interviews" element={<InterviewTable />}></Route>
-              <Route path="jobs" element={<JobTable />}></Route>
-              <Route index={true} element={<PredictedTable />}></Route>
+          <Route element={<RequireAuth allowedRole={allowed} />}>
+            <Route path="/" element={<Layout />}>
+              <Route path="job/about-job/:id" element={<AboutJob />}></Route>
             </Route>
-          </Route>
-          <Route element={<RequireAuth allowedRole={"Recruiter"} />}>
-            <Route path="dashboard/" element={<Dashboard />}>
-              <Route path="applications" element={<ApplicationTable />}></Route>
-              <Route path="companies" element={<CompanyTable />}></Route>
-              <Route path="departments" element={<DepartmentTable />}></Route>
-              <Route path="interviews" element={<InterviewTable />}></Route>
-              <Route path="jobs" element={<JobTable />}></Route>
-              <Route index={true} element={<PredictedTable />}></Route>
-            </Route>
-          </Route>
-          <Route element={<RequireAuth allowedRole={"user"} />}>
             <Route path="dashboard/" element={<Dashboard />}>
               <Route path="applications" element={<ApplicationTable />}></Route>
               <Route path="companies" element={<CompanyTable />}></Route>

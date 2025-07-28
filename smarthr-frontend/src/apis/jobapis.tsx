@@ -44,22 +44,11 @@ export type job_post_type = Omit<
 // PUBLIC FUNCTIONS (No authentication required)
 // ========================================
 
-export type JobFilters = {
-  company: string;
-  department: string;
-};
-
-export const listJobs = async (options?: JobFilters): Promise<job_type[]> => {
+export const listJobs = async (): Promise<job_type[]> => {
   try {
     const { data } = await axios.get(BASE_URL);
     const result = job_array_schema.safeParse(data);
-
     if (result.success) {
-      if (options?.company) {
-        result.data = result.data.filter((job) => {
-          return job.company.name === options.company;
-        });
-      }
       return result.data;
     } else {
       console.error("Validation error:", result.error);
