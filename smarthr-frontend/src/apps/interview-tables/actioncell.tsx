@@ -134,16 +134,17 @@ const Actionscell = ({ item }: { item: interview_type }) => {
   const { data: applications } = useListApplicationsPrivate();
 
   const onSubmit = (data: FormData) => {
-    console.log("Submitting interview update:", data);
+    const videoFile = data.interview_video?.[0] || null;
 
-    // Transform the data to match interview_put_type
     const updateData = {
       id: data.id,
       application_id: data.application_id,
       date: data.date ? data.date.toISOString() : null,
       external_meeting_link: data.external_meeting_link,
-      interview_video: data.interview_video?.[0] || null,
+      interview_video: videoFile,
     };
+
+    console.log("Final update data:", updateData);
 
     updateInterview.mutate(updateData, {
       onSuccess: () => {
