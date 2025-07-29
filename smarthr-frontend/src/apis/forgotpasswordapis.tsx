@@ -1,7 +1,8 @@
 import axios from "axios";
 import z from "zod";
 
-const API_URL = "http://127.0.0.1:8000/auth/users/reset_password/";
+const API_URL =
+  "https://backend-production-a1cf.up.railway.app/auth/users/reset_password/";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const forgot_schema = z.object({

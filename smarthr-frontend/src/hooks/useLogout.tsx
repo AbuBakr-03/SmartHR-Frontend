@@ -22,7 +22,7 @@ const useLogout = () => {
     try {
       // Call backend to clear HttpOnly cookie
       await axiosPrivate.post(
-        "http://127.0.0.1:8000/auth/logout/",
+        "https://backend-production-a1cf.up.railway.app/auth/logout/",
         {},
         {
           withCredentials: true,

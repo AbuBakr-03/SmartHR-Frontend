@@ -2,7 +2,7 @@
 import axios from "axios";
 import { z } from "zod";
 
-const BASE_URL = "http://127.0.0.1:8000/api/company/";
+const BASE_URL = "https://backend-production-a1cf.up.railway.app/api/company/";
 
 // Schema for company
 export const company_schema = z.object({

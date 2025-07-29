@@ -22,7 +22,8 @@ const responseschema = z.object({
 export type request = z.infer<typeof requestschema>;
 export type response = z.infer<typeof responseschema>;
 
-const BASE_URL = "http://127.0.0.1:8000/auth/jwt/create/";
+const BASE_URL =
+  "https://backend-production-a1cf.up.railway.app/auth/jwt/create/";
 
 export const login = async (details: request): Promise<response> => {
   try {

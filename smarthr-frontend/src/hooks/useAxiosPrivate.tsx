@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import useRefreshToken from "./useRefreshToken";
 
 const axiosPrivate = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/",
+  baseURL: "https://backend-production-a1cf.up.railway.app/api/",
   headers: {
     "Content-Type": "application/json",
   },
