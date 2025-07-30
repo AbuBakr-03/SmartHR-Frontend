@@ -22,7 +22,7 @@ const useLogout = () => {
     try {
       // Call backend to clear HttpOnly cookie
       await axiosPrivate.post(
-        "https://backend-production-a1cf.up.railway.app/auth/logout/",
+        "https://api.smarthr.website/auth/logout/",
         {},
         {
           withCredentials: true,

@@ -36,7 +36,7 @@ export const columns: ColumnDef<predicted_type>[] = [
       const prediction = row.original;
       return <span>{prediction.interview.application.job.title}</span>;
     },
-    filterFn: (row, id, value) => {
+    filterFn: (row, _id, value) => {
       const predictionObject = row.original.interview.application.job;
       return value.includes(predictionObject.title);
     },
@@ -52,7 +52,7 @@ export const columns: ColumnDef<predicted_type>[] = [
       const prediction = row.original;
       return <span>{prediction.interview.application.job.company.name}</span>;
     },
-    filterFn: (row, id, value) => {
+    filterFn: (row, _id, value) => {
       const companyObject = row.original.interview.application.job.company;
       return value.includes(companyObject.name);
     },

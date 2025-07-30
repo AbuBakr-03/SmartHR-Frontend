@@ -33,7 +33,7 @@ const JobBoard = () => {
   const { company, department } = filterData;
   const [sortBy, setSortBy] = React.useState<string>("none");
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = React.useState<number>(5);
+  const [itemsPerPage] = React.useState<number>(5);
 
   // Pass the current filter values to the hook
   const jobs = useListJobs();

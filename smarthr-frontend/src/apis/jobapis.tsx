@@ -2,7 +2,7 @@
 import axios from "axios";
 import { z } from "zod";
 
-const BASE_URL = "https://backend-production-a1cf.up.railway.app/api/job/";
+const BASE_URL = "https://api.smarthr.website/api/job/";
 
 import { company_schema } from "./companyapis";
 import { department_schema } from "./departmentapis";

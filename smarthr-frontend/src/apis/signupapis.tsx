@@ -1,6 +1,6 @@
 import axios from "axios";
 import z from "zod";
-const BASE_URL = "https://backend-production-a1cf.up.railway.app/auth/users/";
+const BASE_URL = "https://api.smarthr.website/auth/users/";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const schema = z.object({
   username: z

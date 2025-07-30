@@ -2,7 +2,7 @@ import axios from "axios";
 import z from "zod";
 
 const API_URL =
-  "https://backend-production-a1cf.up.railway.app/auth/users/reset_password_confirm/";
+  "https://api.smarthr.website/auth/users/reset_password_confirm/";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const reset_schema = z.object({

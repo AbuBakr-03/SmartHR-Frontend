@@ -8,7 +8,7 @@ const useRefreshToken = () => {
   const refresh = async () => {
     try {
       const { data } = await axios.post(
-        "https://backend-production-a1cf.up.railway.app/auth/jwt/refresh/",
+        "https://api.smarthr.website/auth/jwt/refresh/",
         {}, // Empty body - refresh token comes from HttpOnly cookie
         {
           withCredentials: true, // Important: ensures cookies are sent
