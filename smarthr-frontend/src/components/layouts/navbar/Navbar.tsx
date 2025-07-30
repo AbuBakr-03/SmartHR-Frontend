@@ -124,24 +124,40 @@ const Navbar: React.FC<proptype> = ({ sidebar }) => {
                   </ul>
 
                   <div className="grid place-items-center gap-2">
-                    <Link
-                      className={`w-11/12 rounded border border-slate-300 py-2 pr-2 pl-2 text-center text-sm font-semibold`}
-                      onClick={() => {
-                        handleClickOutside();
-                      }}
-                      to={"/sign-up"}
-                    >
-                      Sign Up
-                    </Link>
-                    <Link
-                      className={`w-11/12 rounded bg-slate-900 py-2 pr-2 pl-2 text-center text-sm font-semibold text-white hover:bg-black`}
-                      onClick={() => {
-                        handleClickOutside();
-                      }}
-                      to={"/log-in"}
-                    >
-                      Log In
-                    </Link>
+                    {auth.role ? (
+                      <>
+                        <Link
+                          className={`w-11/12 rounded bg-slate-900 py-2 pr-2 pl-2 text-center text-sm font-semibold text-white hover:bg-black`}
+                          onClick={() => {
+                            handleClickOutside();
+                          }}
+                          to={"/dashboard"}
+                        >
+                          Dashboard
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          className={`w-11/12 rounded border border-slate-300 py-2 pr-2 pl-2 text-center text-sm font-semibold`}
+                          onClick={() => {
+                            handleClickOutside();
+                          }}
+                          to={"/sign-up"}
+                        >
+                          Sign Up
+                        </Link>
+                        <Link
+                          className={`w-11/12 rounded bg-slate-900 py-2 pr-2 pl-2 text-center text-sm font-semibold text-white hover:bg-black`}
+                          onClick={() => {
+                            handleClickOutside();
+                          }}
+                          to={"/log-in"}
+                        >
+                          Log In
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </motion.div>
               </>
