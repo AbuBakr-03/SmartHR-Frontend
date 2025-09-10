@@ -7,7 +7,7 @@ const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
   const authcontext = useAuth();
-  const { auth } = authcontext;
+  const { auth, persist } = authcontext;
 
   useEffect(() => {
     let isMounted = true;
@@ -27,8 +27,8 @@ const PersistLogin = () => {
       }
     };
 
-    // If we don't have an access token, try to refresh
-    if (!auth?.access) {
+    // Only attempt token refresh if persist is enabled and we don't have an access token
+    if (persist && !auth?.access) {
       verifyRefreshToken();
     } else {
       setIsLoading(false);
