@@ -41,7 +41,7 @@ export function SignupForm({
       .min(2, { message: "Full name must be at least 2 characters long." })
       .max(50, { message: "Full name must be 50 characters or fewer." }),
     email: z.email(),
-    role: z.enum(["user", "Recruiter"]),
+    group: z.enum(["user", "Recruiter"]), // Changed from 'role' to 'group'
     password: z
       .string()
       .min(8, "Password must be at least 8 characters long")
@@ -127,7 +127,7 @@ export function SignupForm({
               ></FormField>
               <FormField
                 control={form.control}
-                name="role"
+                name="group"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Role</FormLabel>
