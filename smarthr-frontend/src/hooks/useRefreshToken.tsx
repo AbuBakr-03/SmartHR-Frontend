@@ -7,6 +7,7 @@ const useRefreshToken = () => {
 
   const refresh = async () => {
     try {
+      console.log("useRefreshToken: Making refresh request...");
       const { data } = await axios.post(
         "https://api.smarthr.website/auth/jwt/refresh/",
         {}, // Empty body - refresh token comes from HttpOnly cookie
@@ -15,6 +16,8 @@ const useRefreshToken = () => {
         },
       );
 
+      console.log("useRefreshToken: Refresh response received:", data);
+
       // Update auth state with new access token and role
       setAuth((prev) => ({
         ...prev,
@@ -22,9 +25,20 @@ const useRefreshToken = () => {
         role: data.role,
       }));
 
+      console.log("useRefreshToken: Auth state updated successfully");
       return data.access;
     } catch (error) {
-      console.error("Token refresh failed:", error);
+      console.error("useRefreshToken: Token refresh failed:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { status?: number; statusText?: string; data?: unknown };
+        };
+        console.error("useRefreshToken: Error details:", {
+          status: axiosError.response?.status,
+          statusText: axiosError.response?.statusText,
+          data: axiosError.response?.data,
+        });
+      }
 
       // Clear auth state on refresh failure
       setAuth({
