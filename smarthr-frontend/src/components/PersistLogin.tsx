@@ -14,17 +14,11 @@ const PersistLogin = () => {
 
     const verifyRefreshToken = async () => {
       try {
-        console.log("PersistLogin: Attempting token refresh...");
-        const newToken = await refresh();
-        console.log(
-          "PersistLogin: Token refresh successful:",
-          newToken ? "Token received" : "No token",
-        );
+        await refresh();
       } catch (err) {
         // Token refresh failed - user will be redirected to login
-        console.error(
-          `PersistLogin: Token refresh failed, user needs to log in:`,
-          err,
+        console.log(
+          `PersistLogin: Token refresh failed, user needs to log in ${err}`,
         );
       } finally {
         if (isMounted) {
@@ -34,17 +28,9 @@ const PersistLogin = () => {
     };
 
     // Only attempt token refresh if persist is enabled AND we don't have an access token
-    console.log("PersistLogin: Checking conditions:", {
-      persist,
-      hasAccessToken: !!auth?.access,
-      authState: auth,
-    });
-
     if (persist && !auth?.access) {
-      console.log("PersistLogin: Conditions met, attempting refresh...");
       verifyRefreshToken();
     } else {
-      console.log("PersistLogin: Conditions not met, skipping refresh");
       setIsLoading(false);
     }
 
